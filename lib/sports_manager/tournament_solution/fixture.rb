@@ -4,7 +4,6 @@ module SportsManager
   class TournamentSolution
     # Public: A schedule for the participating teams.
     class Fixture
-      require_relative 'bye_fixture'
       extend Forwardable
 
       attr_reader :match, :timeslot, :category

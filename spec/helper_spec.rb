@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # spec/sports_manager/helper_spec.rb
 
 require 'spec_helper'

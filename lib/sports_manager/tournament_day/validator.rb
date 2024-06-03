@@ -4,7 +4,6 @@ module SportsManager
   class TournamentDay
     # Public: Validates tournament day's date and time range
     class Validator
-      require 'date'
       extend Forwardable
 
       DateParsingError = Class.new(StandardError) do

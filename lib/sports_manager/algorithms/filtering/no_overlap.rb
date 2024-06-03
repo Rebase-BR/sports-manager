@@ -4,7 +4,6 @@ module SportsManager
   module Algorithms
     module Filtering
       class NoOverlap
-        require 'forwardable'
         extend Forwardable
 
         attr_reader :tournament

@@ -2,7 +2,6 @@
 
 module SportsManager
   module Constraints
-    require 'csp-resolver'
     class NextRoundConstraint < ::CSP::Constraint
       attr_reader :target_match, :matches,
                   :match_time, :break_time, :minimum_match_gap

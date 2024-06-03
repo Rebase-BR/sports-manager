@@ -2,7 +2,6 @@
 
 module SportsManager
   module Constraints
-    require 'csp-resolver'
     class MultiCategoryConstraint < ::CSP::Constraint
       attr_reader :target_participant, :matches,
                   :match_time, :break_time, :minimum_match_gap

@@ -4,7 +4,6 @@ module SportsManager
   module Constraints
     # Public: Constraint to all timeslot assignments be different for
     # each match
-    require 'csp-resolver'
     class AllDifferentConstraint < ::CSP::Constraint
       attr_reader :matches
 

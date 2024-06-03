@@ -41,7 +41,7 @@ RSpec.describe SportsManager::TournamentSolution::Solution do
 
       dependencies2, dependencies3, *dependencies4 = dependencies = [
         instance_double(bye_fixture_class, category: category, match_id: 1),
-        instance_double(bye_fixture_class, category: category , match_id: 2),
+        instance_double(bye_fixture_class, category: category, match_id: 2),
         instance_double(bye_fixture_class, category: category, match_id: 3),
         instance_double(bye_fixture_class, category: category, match_id: 4)
       ]

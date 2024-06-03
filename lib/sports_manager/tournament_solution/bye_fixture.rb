@@ -4,7 +4,6 @@ module SportsManager
   class TournamentSolution
     # Public: A placeholder fixture for byes.
     class ByeFixture
-      require 'forwardable'
       extend Forwardable
 
       attr_reader :match, :category

@@ -3,7 +3,6 @@
 module SportsManager
   # Public: A tennis tournament with different categories matches
   class Tournament
-    require 'forwardable'
     extend Forwardable
 
     attr_reader :settings, :groups

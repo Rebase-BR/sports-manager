@@ -2,7 +2,6 @@
 
 module SportsManager
   module Constraints
-    require 'csp-resolver'
     class NoOverlappingConstraint < ::CSP::Constraint
       attr_reader :matches, :match_time
 

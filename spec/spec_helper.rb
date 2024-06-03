@@ -17,7 +17,7 @@
 
 require 'simplecov'
 if ENV['COVERAGE']
-  SimpleCov.start  do
+  SimpleCov.start do
     add_filter '/spec'
 
     add_group 'Lib', '/lib/sports_manager'
@@ -25,9 +25,6 @@ if ENV['COVERAGE']
 end
 
 require_relative '../lib/sports-manager'
-
-
-
 
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|

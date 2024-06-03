@@ -19,8 +19,6 @@ module SportsManager
   #      MATCH 4               \_TEAM G______/
   #               _TEAM H______/
   class TournamentGenerator
-    require 'forwardable'
-
     extend Forwardable
 
     attr_reader :params, :format, :tournament, :variables, :domains,

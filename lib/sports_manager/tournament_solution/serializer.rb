@@ -4,9 +4,6 @@ module SportsManager
   class TournamentSolution
     # NOTE: Maybe temporary? should each object override as_json?
     class Serializer
-      require 'json'
-      require 'forwardable'
-      require 'sports_manager/json_helper'
       include JsonHelper
       extend Forwardable
 

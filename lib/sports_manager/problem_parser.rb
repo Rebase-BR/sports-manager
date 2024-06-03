@@ -3,9 +3,6 @@
 module SportsManager
   # Public: Converts payload to a tournament
   class ProblemParser
-    require 'forwardable'
-    require 'ostruct'
-
     extend Forwardable
 
     ATTRIBUTES = %i[

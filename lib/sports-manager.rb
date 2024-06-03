@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'csp-resolver'
+require 'forwardable'
+require 'ostruct'
 require_relative 'sports_manager/version'
 require_relative 'sports_manager/helper'
 require_relative 'sports_manager/team'
@@ -22,6 +24,7 @@ require_relative 'sports_manager/solution_drawer'
 require_relative 'sports_manager/matches_generator'
 require_relative 'sports_manager/tournament_builder'
 require_relative 'sports_manager/constraint_builder'
+require_relative 'sports_manager/tournament_solution/bye_fixture'
 require_relative 'sports_manager/tournament_solution/fixture'
 require_relative 'sports_manager/tournament_solution/solution'
 require_relative 'sports_manager/tournament_solution/serializer'
@@ -44,6 +47,14 @@ require_relative 'sports_manager/match_builder'
 require_relative 'sports_manager/team_builder'
 require_relative 'sports_manager/solution_drawer/cli/table'
 require_relative 'sports_manager/tournament_generator'
+require_relative 'sports_manager/solution_drawer/mermaid/gantt'
+require_relative 'sports_manager/solution_drawer/mermaid/graph'
+require_relative 'sports_manager/solution_drawer/mermaid/node'
+require_relative 'sports_manager/solution_drawer/mermaid/node_style'
+require_relative 'sports_manager/solution_drawer/mermaid/bye_node'
+require_relative 'sports_manager/solution_drawer/mermaid/solution_graph'
+require_relative 'sports_manager/solution_drawer/mermaid/solution_gantt'
+require_relative 'sports_manager/solution_drawer/mermaid'
 
 module SportsManager
 end
