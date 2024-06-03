@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    sports-manager (0.1.0)
+      csp-resolver (~> 0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -58,6 +64,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rubocop (~> 1.28)
   simplecov
+  sports-manager!
 
 BUNDLED WITH
    2.3.27
