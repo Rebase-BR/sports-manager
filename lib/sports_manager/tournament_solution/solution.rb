@@ -51,27 +51,40 @@ module SportsManager
 
       def build_acronym(parts, interval, reference, acronym = [])
         max_size = interval.max
+        interval.reduce(acronym) do |acronym_result, position|
+          acronym_result = add_letters_to_acronym(parts, position, max_size, acronym_result)
+          acr = join_acronym_parts(acronym_result, parts.size)
+          return acr if acronym_complete?(acr, max_size, reference)
 
-        interval.reduce(acronym) do |acronym, position|
-          remain_size = max_size - acronym.size
-
-          letters = parts
-            .map { |part| part[position] }
-            .compact
-            .yield_self { |mapped_letters| mapped_letters.map { |letter| letter[0..remain_size] } }
-
-          acronym.push(*letters)
-
-          acr = acronym.each_slice(parts.size).reduce(&:zip).join
-          next acr if acr.size < max_size
-          break acr unless reference.values.include?(acr)
-
-          new_interval = interval.minmax.map(&1.method(:+))
-
-          acr = build_acronym(parts, new_interval, reference, acronym)
-
-          break acr
+          acronym_result
         end
+        retry_with_larger_interval(parts, interval, reference, acronym_result)
+      end
+
+      def add_letters_to_acronym(parts, position, max_size, acronym_result)
+        remain_size = max_size - acronym_result.size
+        letters = extract_first_letters(parts, position, remain_size)
+        acronym_result.push(*letters)
+      end
+
+      def join_acronym_parts(acronym_result, parts_size)
+        acronym_result.each_slice(parts_size).reduce(&:zip).join
+      end
+
+      def acronym_complete?(acr, max_size, reference)
+        acr.size >= max_size && !reference.values.include?(acr)
+      end
+
+      def retry_with_larger_interval(parts, interval, reference, acronym_result)
+        new_interval = interval.minmax.map(&1.method(:+))
+        build_acronym(parts, new_interval, reference, acronym_result)
+      end
+
+      def extract_first_letters(parts, position, remain_size)
+        parts
+          .map { |part| part[position] }
+          .compact
+          .yield_self { |mapped_letters| mapped_letters.map { |letter| letter[0..remain_size] } }
       end
     end
   end

@@ -36,29 +36,30 @@ module SportsManager
         end
 
         def build_subgraphs(categories_fixtures)
-          categories_fixtures = categories_fixtures
+          categories_fixtures
             .transform_values { |fixtures| build_nodes(fixtures) }
             .transform_values { |nodes| (nodes | build_links(nodes)) }
         end
 
         def build_nodes(fixtures)
-          fixtures = fixtures
+          fixtures
             .sort_by(&:match_id)
             .map { |fixture| Node.for(fixture) }
         end
 
         def build_links(nodes)
-          nodes = nodes
+          nodes
             .select(&:links?)
             .flat_map { |linked_node| build_link(linked_node, nodes) }
-          nodes
         end
 
         def build_link(linked_node, nodes)
           new_nodes = nodes
-                        .select { |node| linked_node.depends_on?(node) }
+            .select { |node| linked_node.depends_on?(node) }
 
-          new_nodes.map { |previous_node| LinkNode.new({previous_name: previous_node.name, next_name: linked_node.name}) }
+          new_nodes.map do |previous_node|
+            LinkNode.new({ previous_name: previous_node.name, next_name: linked_node.name })
+          end
         end
 
         def serialize(graph)

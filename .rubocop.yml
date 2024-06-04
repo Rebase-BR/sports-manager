@@ -26,3 +26,5 @@ Style/ObjectThen:
 Naming/FileName:
   Exclude:
     - 'lib/sports-manager.rb'
+Style/OpenStructUse:
+  Enabled: false

@@ -7,7 +7,7 @@ module SportsManager
   class ByeMatch
     attr_reader :id, :category, :team1, :team2, :round, :teams, :depends_on
 
-    def initialize(category:, id: nil, team1: nil, team2: nil, round: 0, depends_on: [])
+    def initialize(category:, id: nil, team1: nil, team2: nil, round: 0, depends_on: []) # rubocop:disable Metrics/ParameterLists, Lint/UnusedMethodArgument
       @id = id
       @category = category
       @team1 = team1
