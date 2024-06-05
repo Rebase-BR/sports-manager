@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe SportsManager::ConstraintBuilder do
   describe '.build' do
     it 'instantiate and calls build with csp' do
-      tournament = instance_double(Tennis::Tournament)
+      tournament = instance_double(SportsManager::Tournament)
       csp = instance_double(CSP::Problem)
       constraint = instance_double('Constraint')
       constraints = [constraint]
@@ -24,7 +24,7 @@ RSpec.describe SportsManager::ConstraintBuilder do
 
   describe '#build' do
     it 'adds constraints to a csp' do
-      tournament = instance_double(Tennis::Tournament)
+      tournament = instance_double(SportsManager::Tournament)
       csp = instance_double(CSP::Problem)
       constraint = instance_double('Constraint', for_tournament: true)
       constraints = [constraint]
@@ -42,14 +42,14 @@ RSpec.describe SportsManager::ConstraintBuilder do
 
     context 'when no constraint is passed' do
       it 'uses default constraints' do
-        tournament = instance_double(Tennis::Tournament)
+        tournament = instance_double(SportsManager::Tournament)
         csp = instance_double(CSP::Problem)
         constraints = [
-          CSP::Constraints::AllDifferentConstraint,
-          CSP::Constraints::NoOverlappingConstraint,
-          CSP::Constraints::MatchConstraint,
-          CSP::Constraints::MultiCategoryConstraint,
-          CSP::Constraints::NextRoundConstraint
+          SportsManager::Constraints::AllDifferentConstraint,
+          SportsManager::Constraints::NoOverlappingConstraint,
+          SportsManager::Constraints::MatchConstraint,
+          SportsManager::Constraints::MultiCategoryConstraint,
+          SportsManager::Constraints::NextRoundConstraint
         ]
 
         constraints.each do |constraint|

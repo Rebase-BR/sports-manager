@@ -2,7 +2,7 @@
 
 # rubocop:disable Metrics/AbcSize
 module SportsManager
-  # Public: Tenis Tournament Solver
+  # Public:Tournament Solver
   #               _TEAM A______
   #      MATCH 1               \_TEAM B______
   #               _TEAM B______/             \

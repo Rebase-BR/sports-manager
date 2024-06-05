@@ -2,7 +2,7 @@
 
 module SportsManager
   # TODO: better name this
-  # Public: Builds a CSP for Tennis Tournament Scheduling.
+  # Public: Builds a CSP for Tournament Scheduling.
   #
   # Usage example:
   # builder = ProblemBuilder.new(tournament)

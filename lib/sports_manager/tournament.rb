@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SportsManager
-  # Public: A tennis tournament with different categories matches
+  # Public: A tournament with different categories matches
   class Tournament
     extend Forwardable
 
