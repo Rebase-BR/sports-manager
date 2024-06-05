@@ -131,7 +131,6 @@ params = {
 ```
 
 ```ruby
-# CLI format
 SportsManager::TournamentGenerator.call(params, format: :cli)
 ```
 ```bash
@@ -159,7 +158,6 @@ mens_single | 15 | 2     | M13 vs. M14           | 0     | 09/09 at 17:00
 Total solutions: 1
 ```
 ```ruby
-# Mermaid format (for visual diagrams)
 SportsManager::TournamentGenerator.call(params, format: :mermaid)
 ```
 ```bash
