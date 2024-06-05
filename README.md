@@ -1,6 +1,6 @@
 # Sports Manager Gem
 
-The `sports-manager` gem is a powerful tool designed to generate and manage tournament schedules. It handles complex scheduling tasks, considering various constraints such as court availability, game length, rest breaks, and participant availability. Under the hood, it leverages the `csp-resolver` gem to solve these complex Constraint Satisfaction Problems (CSPs).
+The `sports-manager` gem is a powerful tool designed to generate and manage tournament schedules. It handles complex scheduling tasks, considering various constraints such as court availability, game length, rest breaks, and participant availability. Under the hood, it leverages the [`csp-resolver`](https://github.com/Rebase-BR/csp-resolver) gem to solve these complex Constraint Satisfaction Problems (CSPs).
 
 ## Getting Started
 
