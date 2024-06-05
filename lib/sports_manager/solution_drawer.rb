@@ -18,9 +18,6 @@ module SportsManager
       CLI.draw(tournament_solution)
     end
 
-    # TODO: create class | move serialize class too
-    def json
-      puts JSON.pretty_generate(tournament_solution.as_json)
-    end
+    # TODO: create json method | create class | move serialize class too
   end
 end

@@ -28,13 +28,7 @@ module SportsManager
     end
 
     def total_time
-      @total_time ||= if start_hour <= end_hour
-        end_hour - start_hour
-      else
-        # TODO: maybe remove since we are not workig (yet)
-        # with time between two dates (start:20h, end:04h)
-        (MAX_HOUR - start_hour) + end_hour
-      end
+      @total_time ||= end_hour - start_hour if start_hour <= end_hour
     end
 
     def <=>(other)

@@ -57,6 +57,17 @@ RSpec.describe SportsManager::ByeMatch do
     end
   end
 
+  describe '#title' do
+    it 'returns the team names with BYE' do
+      team1 = instance_double(SportsManager::Team, name: 'Team 1')
+      team2 = instance_double(SportsManager::Team, name: 'Team 2')
+
+      bye = described_class.new(category: :mixed_single, team1: team1, team2: team2)
+
+      expect(bye.title).to eq 'Team 1Team 2 | BYE'
+    end
+  end
+
   describe '#==' do
     context 'when id, category, and round are the same' do
       it 'returns true' do

@@ -2,15 +2,11 @@
 
 module SportsManager
   module JsonHelper
-    def as_json(options = nil)
-      if respond_to?(:attributes)
-        attributes.as_json(options)
-      else
-        instance_variables.each_with_object({}) do |var, hash|
-          key = var.to_s.delete('@').to_sym
-          value = instance_variable_get(var)
-          hash[key] = self.class.convert_value(value)
-        end
+    def as_json(_options = nil)
+      instance_variables.each_with_object({}) do |var, hash|
+        key = var.to_s.delete('@').to_sym
+        value = instance_variable_get(var)
+        hash[key] = JsonHelper.convert_value(value)
       end
     end
 

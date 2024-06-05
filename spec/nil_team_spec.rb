@@ -16,4 +16,10 @@ RSpec.describe SportsManager::NilTeam do
       expect(team1 == team4).to eq false
     end
   end
+
+  describe '#name' do
+    it 'returns an empty string' do
+      expect(described_class.new(category: :mixed_single).name).to eq ''
+    end
+  end
 end
