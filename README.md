@@ -67,10 +67,10 @@ matches = {
 
 solution = SportsManager::TournamentGenerator.new(format: :cli)
   .add_days(days)
-  .add_courts(2)
-  .add_game_length(60)
-  .add_rest_break(30)
-  .enable_single_day_matches(false)
+  .add_courts(courts)
+  .add_game_length(game_length)
+  .add_rest_break(rest_break)
+  .enable_single_day_matches(single_day_matches)
   .add_subscriptions(subscriptions)
   .add_matches(matches)
 ```
@@ -153,10 +153,10 @@ matches = {
 
  solution = SportsManager::TournamentGenerator.new(format: :cli)
   .add_days(days)
-  .add_courts(2)
-  .add_game_length(60)
-  .add_rest_break(30)
-  .enable_single_day_matches(false)
+  .add_courts(courts)
+  .add_game_length(game_length)
+  .add_rest_break(rest_break)
+  .enable_single_day_matches(single_day_matches)
   .add_subscriptions(subscriptions)
   .add_matches(matches)
   .call
@@ -224,10 +224,10 @@ matches = {
 
  solution = SportsManager::TournamentGenerator.new(format: :mermaid)
   .add_days(days)
-  .add_courts(2)
-  .add_game_length(60)
-  .add_rest_break(30)
-  .enable_single_day_matches(false)
+  .add_courts(courts)
+  .add_game_length(game_length)
+  .add_rest_break(rest_break)
+  .enable_single_day_matches(single_day_matches)
   .add_subscriptions(subscriptions)
   .add_matches(matches)
   .call
