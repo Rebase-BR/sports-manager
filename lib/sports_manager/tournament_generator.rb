@@ -38,7 +38,7 @@ module SportsManager
         .add_courts(params[:courts])
         .add_game_length(params[:game_length])
         .add_rest_break(params[:rest_break])
-        .set_single_day_matches(params[:single_day_matches])
+        .enable_single_day_matches(params[:single_day_matches])
         .call
     end
 
@@ -75,8 +75,8 @@ module SportsManager
     end
 
     def add_subscriptions(subscriptions)
-      subscriptions.each do |category, subscriptions|
-        add_subscriptions_per_category(category, subscriptions)
+      subscriptions.each do |category, subscriptions_per_category|
+        add_subscriptions_per_category(category, subscriptions_per_category)
       end
       self
     end
@@ -93,8 +93,8 @@ module SportsManager
     end
 
     def add_matches(matches)
-      matches.each do |category, matches|
-        add_matches_per_category(category, matches)
+      matches.each do |category, matches_per_category|
+        add_matches_per_category(category, matches_per_category)
       end
       self
     end
@@ -114,7 +114,7 @@ module SportsManager
       self
     end
 
-    def set_single_day_matches(single_day_matches)
+    def enable_single_day_matches(single_day_matches)
       @single_day_matches = single_day_matches
       self
     end

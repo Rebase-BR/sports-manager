@@ -70,7 +70,7 @@ solution = SportsManager::TournamentGenerator.new(format: :cli)
   .add_courts(2)
   .add_game_length(60)
   .add_rest_break(30)
-  .set_single_day_matches(false)
+  .enable_single_day_matches(false)
   .add_subscriptions(subscriptions)
   .add_matches(matches)
 ```
@@ -82,7 +82,7 @@ solution = SportsManager::TournamentGenerator.new(format: :cli)
 - `add_courts(courts)`: Adds the number of available courts.
 - `add_game_length(game_length)`: Adds the duration of each game in minutes.
 - `add_rest_break(rest_break)`: Adds the rest time between player matches in minutes.
-- `set_single_day_matches(single_day_matches)`: Sets if all matches should be on the same day.
+- `enable_single_day_matches(single_day_matches)`: Sets if all matches should be on the same day.
 - `add_subscriptions(subscriptions)`: Adds the players or teams participating in each category.
 - `add_subscription(category, subscription)`: Adds a single player or team to a category.
 - `add_subscriptions_per_category(subscriptions_per_category)`: Adds the players or teams participating per category.
@@ -156,7 +156,7 @@ matches = {
   .add_courts(2)
   .add_game_length(60)
   .add_rest_break(30)
-  .set_single_day_matches(false)
+  .enable_single_day_matches(false)
   .add_subscriptions(subscriptions)
   .add_matches(matches)
   .call
@@ -227,7 +227,7 @@ matches = {
   .add_courts(2)
   .add_game_length(60)
   .add_rest_break(30)
-  .set_single_day_matches(false)
+  .enable_single_day_matches(false)
   .add_subscriptions(subscriptions)
   .add_matches(matches)
   .call

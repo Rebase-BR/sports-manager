@@ -55,21 +55,19 @@ RSpec.describe SportsManager::MatchesGenerator do
           ]
         }
 
-
         matches = described_class.call(subscriptions)
 
         expect(matches).to match(a_hash_including(
-                                    mens_single: [
-                                      [1, 10], [2, 9],
-                                      [3, 8], [4, 7], [5, 6]
-                                    ]
-                                  ))
+                                   mens_single: [
+                                     [1, 10], [2, 9],
+                                     [3, 8], [4, 7], [5, 6]
+                                   ]
+                                 ))
       end
     end
 
     context 'when participants is odd' do
       it 'generates matches and byes (match with one subscriber)' do
-
         subscriptions = {
           mens_single: [
             { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
@@ -77,7 +75,6 @@ RSpec.describe SportsManager::MatchesGenerator do
             { id: 5, name: 'Carlos' }
           ]
         }
-
 
         matches = described_class.call(subscriptions)
 
@@ -249,7 +246,6 @@ RSpec.describe SportsManager::MatchesGenerator do
           [{ id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' }]
         ]
       }
-
 
       matches = described_class.call(subscriptions)
 
