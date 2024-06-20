@@ -24,9 +24,9 @@ module SportsManager
     attr_reader :format, :tournament, :variables, :domains,
                 :ordering, :filtering, :csp
 
-    attr_accessor :params
+    attr_accessor :days, :subscriptions, :matches, :courts, :game_length, :rest_break, :single_day_matches
 
-    def_delegators :tournament, :match_time, :timeslots, :matches
+    def_delegators :tournament, :match_time, :timeslots
 
     def self.example(type = :simple, format: :cli)
       params = Helper.public_send(type)
@@ -43,15 +43,16 @@ module SportsManager
     end
 
     def initialize(format: :cli)
-      @params = {}
       @format = format
+      @days = {}
+      @subscriptions = {}
+      @matches = {}
       @ordering = Algorithms::Ordering::MultipleMatchesParticipant
       @filtering = Algorithms::Filtering::NoOverlap
     end
 
     def add_day(day, start, finish)
-      params[:when] ||= {}
-      params[:when][day.to_sym] = { start: start, end: finish }
+      days[day.to_sym] = { start: start, end: finish }
       self
     end
 
@@ -63,9 +64,8 @@ module SportsManager
     end
 
     def add_subscription(category, subscription)
-      params[:subscriptions] ||= {}
-      params[:subscriptions][category] ||= []
-      params[:subscriptions][category] << subscription
+      subscriptions[category] ||= []
+      subscriptions[category] << subscription
       self
     end
 
@@ -82,9 +82,8 @@ module SportsManager
     end
 
     def add_match(category, match)
-      params[:matches] ||= {}
-      params[:matches][category] ||= []
-      params[:matches][category] << match
+      matches[category] ||= []
+      matches[category] << match
       self
     end
 
@@ -101,22 +100,22 @@ module SportsManager
     end
 
     def add_courts(number_of_courts)
-      params[:courts] = number_of_courts
+      @courts = number_of_courts
       self
     end
 
     def add_game_length(game_length)
-      params[:game_length] = game_length
+      @game_length = game_length
       self
     end
 
     def add_rest_break(rest_break)
-      params[:rest_break] = rest_break
+      @rest_break = rest_break
       self
     end
 
     def set_single_day_matches(single_day_matches)
-      params[:single_day_matches] = single_day_matches
+      @single_day_matches = single_day_matches
       self
     end
 
@@ -157,22 +156,23 @@ module SportsManager
     end
 
     def build_tournament
+      @matches = matches_generator
       TournamentBuilder
         .new
         .add_matches(matches)
-        .add_subscriptions(params[:subscriptions])
-        .add_schedule(params[:when])
-        .add_configuration(key: :courts, value: params[:courts])
-        .add_configuration(key: :match_time, value: params[:game_length])
-        .add_configuration(key: :break_time, value: params[:rest_break])
-        .add_configuration(key: :single_day_matches, value: params[:single_day_matches])
+        .add_subscriptions(subscriptions)
+        .add_schedule(days)
+        .add_configuration(key: :courts, value: courts)
+        .add_configuration(key: :match_time, value: game_length)
+        .add_configuration(key: :break_time, value: rest_break)
+        .add_configuration(key: :single_day_matches, value: single_day_matches)
         .build
     end
 
-    def matches
-      return params[:matches] if params[:matches] && !params[:matches].empty?
+    def matches_generator
+      return matches if matches && !matches.empty?
 
-      MatchesGenerator.call(@params)
+      MatchesGenerator.call(subscriptions)
     end
 
     def print_solution(tournament_solution)

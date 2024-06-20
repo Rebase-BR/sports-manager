@@ -2,16 +2,16 @@
 
 module SportsManager
   class MatchesGenerator
-    def self.call(payload)
-      new(payload).call
+    def self.call(subscriptions)
+      new(subscriptions).call
     end
 
-    def initialize(payload)
-      @subscriptions = payload[:subscriptions]
+    def initialize(subscriptions)
+      @subscriptions = subscriptions
     end
 
     def call
-      subscriptions.transform_values do |subscriptions|
+      @subscriptions.transform_values do |subscriptions|
         generate_matches(subscriptions)
       end
     end

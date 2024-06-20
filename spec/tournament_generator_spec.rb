@@ -108,7 +108,13 @@ RSpec.describe SportsManager::TournamentGenerator do
         .add_rest_break(30)
         .set_single_day_matches(false)
 
-    expect(tournament_generator.params).to eq(params)
+    expect(tournament_generator.days).to eq(params[:when])
+    expect(tournament_generator.subscriptions).to eq(params[:subscriptions])
+    expect(tournament_generator.matches).to eq(params[:matches])
+    expect(tournament_generator.courts).to eq(params[:courts])
+    expect(tournament_generator.game_length).to eq(params[:game_length])
+    expect(tournament_generator.rest_break).to eq(params[:rest_break])
+    expect(tournament_generator.single_day_matches).to eq(params[:single_day_matches])
   end
 
   describe '#add_day' do
@@ -121,7 +127,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         described_class.new
           .add_day('2023-09-09', 9, 20)
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.days).to eq(params[:when])
     end
   end
 
@@ -143,7 +149,7 @@ RSpec.describe SportsManager::TournamentGenerator do
             }
           )
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.days).to eq(params[:when])
     end
   end
 
@@ -159,7 +165,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         described_class.new
           .add_subscription(:mixed_single, { id: 1, name: 'João' })
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.subscriptions).to eq(params[:subscriptions])
     end
   end
 
@@ -181,7 +187,7 @@ RSpec.describe SportsManager::TournamentGenerator do
             { id: 5, name: 'Carlos' }
           ])
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.subscriptions).to eq(params[:subscriptions])
     end
   end
 
@@ -213,7 +219,7 @@ RSpec.describe SportsManager::TournamentGenerator do
             ]
           )
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.subscriptions).to eq(params[:subscriptions])
     end
   end
 
@@ -229,7 +235,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         described_class.new
           .add_match(:mixed_single, [1, 5])
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.matches).to eq(params[:matches])
     end
   end
 
@@ -245,7 +251,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         described_class.new
           .add_matches_per_category(:mixed_single, [[1, 5], [10, 17]])
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.matches).to eq(params[:matches])
     end
   end
 
@@ -265,7 +271,7 @@ RSpec.describe SportsManager::TournamentGenerator do
             womens_single: [[25, 2], [15, 16]]
           )
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.matches).to eq(params[:matches])
     end
   end
 
@@ -277,7 +283,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         described_class.new
           .add_courts(2)
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.courts).to eq(params[:courts])
     end
   end
 
@@ -289,7 +295,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         described_class.new
           .add_game_length(60)
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.game_length).to eq(params[:game_length])
     end
   end
 
@@ -301,7 +307,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         described_class.new
           .add_rest_break(30)
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.rest_break).to eq(params[:rest_break])
     end
   end
 
@@ -313,7 +319,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         described_class.new
           .set_single_day_matches(true)
 
-      expect(tournament_generator.params).to eq(params)
+      expect(tournament_generator.single_day_matches).to eq(params[:single_day_matches])
     end
   end
 
@@ -794,18 +800,16 @@ RSpec.describe SportsManager::TournamentGenerator do
       )
     end
   end
-  describe '#matches' do
+  describe '#matches_generator' do
     it 'generates matches when no matches are provided' do
       generator = described_class.new
-      generator.params = {
-        subscriptions: {
-          mixed_single: [
-            { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
-            { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
-            { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
-            { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
-          ]
-        }
+      generator.subscriptions = {
+        mixed_single: [
+          { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
+          { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
+          { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
+          { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
+        ]
       }
 
       generated_matches = {
@@ -813,9 +817,9 @@ RSpec.describe SportsManager::TournamentGenerator do
       }
       allow(SportsManager::MatchesGenerator).to receive(:call).and_return(generated_matches)
 
-      result = generator.send(:matches)
+      result = generator.send(:matches_generator)
 
-      expect(SportsManager::MatchesGenerator).to have_received(:call).with(generator.params)
+      expect(SportsManager::MatchesGenerator).to have_received(:call).with(generator.subscriptions)
 
       expect(result).to eq(generated_matches)
     end
@@ -827,8 +831,7 @@ RSpec.describe SportsManager::TournamentGenerator do
       provided_matches = {
         mixed_single: [[1, 34], [5, 33], [10, 29], [17, 25]]
       }
-      generator.params = { matches: provided_matches }
-
+      generator.matches = provided_matches
       result = generator.send(:matches)
 
       expect(SportsManager::MatchesGenerator).not_to have_received(:call)
