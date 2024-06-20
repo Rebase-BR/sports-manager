@@ -132,7 +132,7 @@ RSpec.describe SportsManager::MatchesGenerator do
         },
         courts: 2,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mens_single: [
@@ -216,7 +216,7 @@ RSpec.describe SportsManager::MatchesGenerator do
         },
         courts: 2,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mens_single: [

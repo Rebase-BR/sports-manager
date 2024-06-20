@@ -13,7 +13,7 @@ module SportsManager
         },
         courts: 1,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mixed_single: [{ id: 1, name: 'João' }, { id: 34, name: 'Cleber' }]
@@ -31,7 +31,7 @@ module SportsManager
         },
         courts: 1,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mixed_single: [
@@ -58,7 +58,7 @@ module SportsManager
         },
         courts: 2,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mixed_single: [
@@ -81,7 +81,7 @@ module SportsManager
         },
         courts: 2,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mens_single: [
@@ -118,7 +118,7 @@ module SportsManager
         },
         courts: 2,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mens_single: [
@@ -180,7 +180,7 @@ module SportsManager
         when: { '2023-09-09': { start: 9, end: 20 } },
         courts: 1,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mens_single: [
@@ -208,7 +208,7 @@ module SportsManager
         },
         courts: 1,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mixed_single: [

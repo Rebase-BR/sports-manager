@@ -31,34 +31,46 @@ To set up a tournament, you need to provide a configuration hash that defines al
 ```ruby
 require 'sports-manager'
 
-params = {
-  when: {
-    '2023-09-09': { start: 9, end: 20 },
-    '2023-09-10': { start: 9, end: 13 }
-  },
-  courts: 2,
-  game_length: 60,
-  rest_brake: 30,
-  single_day_matches: false,
-  subscriptions: {
-    mens_single: [
-      { id: 1, name: 'João' }, { id: 2, name: 'Marcelo' },
-      { id: 3, name: 'José' }, { id: 4, name: 'Pedro' },
-      # ...more players...
-    ],
-    womens_double: [
-      [{ id: 17, name: 'Laura' }, { id: 18, name: 'Karina' }],
-      [{ id: 19, name: 'Camila' }, { id: 20, name: 'Bruna' }],
-      # ...more teams...
-    ]
-  },
-  matches: {
-    mens_single: [[1, 4], [2, 3], ...],
-    womens_double: [[[17, 18], [19, 20]], ...]
-  }
-}
-
-solution = SportsManager::TournamentGenerator.call(params)
+SportsManager::TournamentGenerator.new(format: :cli)
+  .add_days(
+    {
+      '2023-09-09': { start: 9, end: 20 },
+      '2023-09-10': { start: 9, end: 13 }
+    }
+  )
+  .add_courts(2)
+  .add_game_length(60)
+  .add_rest_break(30)
+  .set_single_day_matches(false)
+  .add_subscriptions(
+    {
+      mens_single: [
+        { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+        { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+        { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+        { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+        { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
+        { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
+        { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
+        { id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }
+      ]
+    }
+  )
+  .add_matches(
+    {
+      mens_single: [
+        [1, 16],
+        [2, 15],
+        [3, 14],
+        [4, 13],
+        [5, 12],
+        [6, 11],
+        [7, 10],
+        [8, 9]
+      ]
+    }
+  )
+  .call
 ```
 
 #### Configuration Parameters
@@ -66,7 +78,7 @@ solution = SportsManager::TournamentGenerator.call(params)
 - `when`: A hash of dates and their corresponding time slots.
 - `courts`: Number of available courts.
 - `game_length`: Duration of each game in minutes.
-- `rest_brake`: Rest time between games in minutes.
+- `rest_break`: Rest time between games in minutes.
 - `single_day_matches`: Boolean indicating if all matches should be on the same day.
 - `subscriptions`: Players or teams participating in each category.
 - `matches`: First matchups for each category.
@@ -92,46 +104,47 @@ solution = SportsManager::TournamentGenerator.call(params, format: :mermaid)
 ```
 #### Output examples
 
-*Input Example:*
 ```ruby
-params = {
-  when: {
-    '2023-09-09': { start: 9, end: 20 },
-    '2023-09-10': { start: 9, end: 13 }
-  },
-  courts: 2,
-  game_length: 60,
-  rest_brake: 30,
-  single_day_matches: false,
-  subscriptions: {
-    mens_single: [
-      { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
-      { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
-      { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
-      { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
-      { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
-      { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
-      { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
-      { id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }
-    ]
-  },
-  matches: {
-    mens_single: [
-      [1, 16],
-      [2, 15],
-      [3, 14],
-      [4, 13],
-      [5, 12],
-      [6, 11],
-      [7, 10],
-      [8, 9]
-    ]
-  }
-}
-```
-
-```ruby
-SportsManager::TournamentGenerator.call(params, format: :cli)
+SportsManager::TournamentGenerator.new(format: :cli)
+  .add_days(
+    {
+      '2023-09-09': { start: 9, end: 20 },
+      '2023-09-10': { start: 9, end: 13 }
+    }
+  )
+  .add_courts(2)
+  .add_game_length(60)
+  .add_rest_break(30)
+  .set_single_day_matches(false)
+  .add_subscriptions(
+    {
+      mens_single: [
+        { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+        { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+        { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+        { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+        { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
+        { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
+        { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
+        { id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }
+      ]
+    }
+  )
+  .add_matches(
+    {
+      mens_single: [
+        [1, 16],
+        [2, 15],
+        [3, 14],
+        [4, 13],
+        [5, 12],
+        [6, 11],
+        [7, 10],
+        [8, 9]
+      ]
+    }
+  )
+  .call
 ```
 ```bash
 Tournament Timetable:
@@ -158,7 +171,46 @@ mens_single | 15 | 2     | M13 vs. M14           | 0     | 09/09 at 17:00
 Total solutions: 1
 ```
 ```ruby
-SportsManager::TournamentGenerator.call(params, format: :mermaid)
+SportsManager::TournamentGenerator.new(format: :mermaid)
+  .add_days(
+    {
+      '2023-09-09': { start: 9, end: 20 },
+      '2023-09-10': { start: 9, end: 13 }
+    }
+  )
+  .add_courts(2)
+  .add_game_length(60)
+  .add_rest_break(30)
+  .set_single_day_matches(false)
+  .add_subscriptions(
+    {
+      mens_single: [
+        { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+        { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+        { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+        { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+        { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
+        { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
+        { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
+        { id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }
+      ]
+    }
+  )
+  .add_matches(
+    {
+      mens_single: [
+        [1, 16],
+        [2, 15],
+        [3, 14],
+        [4, 13],
+        [5, 12],
+        [6, 11],
+        [7, 10],
+        [8, 9]
+      ]
+    }
+  )
+  .call
 ```
 ```bash
 Solutions:
