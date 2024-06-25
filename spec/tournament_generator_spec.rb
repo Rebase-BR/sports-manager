@@ -3,51 +3,364 @@
 require 'spec_helper'
 
 RSpec.describe SportsManager::TournamentGenerator do
-  describe '.example' do
-    it 'runs an example for a tournament scheduling' do
+  it 'adds all configs, matches and subscriptions' do
+    params = {
+      when: { '2023-09-09': { start: 9, end: 20 } },
+      courts: 1,
+      game_length: 60,
+      rest_break: 30,
+      single_day_matches: false,
+      subscriptions: {
+        mixed_single: [
+          { id: 1, name: 'João' },
+          { id: 34, name: 'Cleber' },
+          { id: 5, name: 'Carlos' },
+          { id: 10, name: 'Daniel' },
+          { id: 17, name: 'Laura' },
+          { id: 25, name: 'Joana' }
+        ],
+        womens_double: [
+          [{ id: 21, name: 'Laura' }, { id: 22, name: 'Karina' }],
+          [{ id: 23, name: 'Jéssica' }, { id: 24, name: 'Daniela' }],
+          [{ id: 19, name: 'Laura' }, { id: 20, name: 'Karina' }],
+          [{ id: 33, name: 'Jéssica' }, { id: 34, name: 'Daniela' }]
+        ],
+        mens_single: [
+          { id: 50, name: 'João' },
+          { id: 51, name: 'Marcelo' },
+          { id: 52, name: 'Bruno' },
+          { id: 55, name: 'Fábio' },
+          { id: 59, name: 'Rodrigo' },
+          { id: 60, name: 'Carlos' }
+        ],
+        womens_single: [
+          { id: 25, name: 'Joana' },
+          { id: 2, name: 'Maria' },
+          { id: 15, name: 'Bruna' },
+          { id: 16, name: 'Fernanda' },
+          { id: 60, name: 'Rosa' },
+          { id: 18, name: 'Carla' }
+        ]
+      },
+      matches: {
+        mixed_single: [[1, 34], [5, 25], [10, 17]],
+        womens_double: [
+          [[21, 22], [23, 24]],
+          [[19, 20], [33, 34]]
+        ],
+        mens_single: [[50, 51], [52, 55], [59, 60]],
+        womens_single: [[25, 2], [15, 16], [60, 18]]
+      }
+    }
+
+    tournament_generator =
+      described_class.new
+        .add_day('2023-09-09', 9, 20)
+        .add_subscription(:mixed_single, { id: 1, name: 'João' })
+        .add_subscription(:mixed_single, { id: 34, name: 'Cleber' })
+        .add_subscription(:mixed_single, { id: 5, name: 'Carlos' })
+        .add_subscription(:mixed_single, { id: 10, name: 'Daniel' })
+        .add_subscription(:mixed_single, { id: 17, name: 'Laura' })
+        .add_subscription(:mixed_single, { id: 25, name: 'Joana' })
+        .add_subscriptions_per_category(:womens_double, [
+          [{ id: 21, name: 'Laura' }, { id: 22, name: 'Karina' }],
+          [{ id: 23, name: 'Jéssica' }, { id: 24, name: 'Daniela' }],
+          [{ id: 19, name: 'Laura' }, { id: 20, name: 'Karina' }],
+          [{ id: 33, name: 'Jéssica' }, { id: 34, name: 'Daniela' }]
+        ])
+        .add_subscriptions(
+          mens_single: [
+            { id: 50, name: 'João' },
+            { id: 51, name: 'Marcelo' },
+            { id: 52, name: 'Bruno' },
+            { id: 55, name: 'Fábio' },
+            { id: 59, name: 'Rodrigo' },
+            { id: 60, name: 'Carlos' }
+          ],
+          womens_single: [
+            { id: 25, name: 'Joana' },
+            { id: 2, name: 'Maria' },
+            { id: 15, name: 'Bruna' },
+            { id: 16, name: 'Fernanda' },
+            { id: 60, name: 'Rosa' },
+            { id: 18, name: 'Carla' }
+          ]
+        )
+        .add_match(:mixed_single, [1, 34])
+        .add_match(:mixed_single, [5, 25])
+        .add_match(:mixed_single, [10, 17])
+        .add_matches_per_category(:womens_double,
+                                  [
+                                    [[21, 22], [23, 24]],
+                                    [[19, 20], [33, 34]]
+                                  ])
+        .add_matches(
+          {
+            mens_single: [[50, 51], [52, 55], [59, 60]],
+            womens_single: [[25, 2], [15, 16], [60, 18]]
+          }
+        )
+        .add_courts(1)
+        .add_game_length(60)
+        .add_rest_break(30)
+        .enable_single_day_matches(false)
+
+    expect(tournament_generator.days).to eq(params[:when])
+    expect(tournament_generator.subscriptions).to eq(params[:subscriptions])
+    expect(tournament_generator.matches).to eq(params[:matches])
+    expect(tournament_generator.courts).to eq(params[:courts])
+    expect(tournament_generator.game_length).to eq(params[:game_length])
+    expect(tournament_generator.rest_break).to eq(params[:rest_break])
+    expect(tournament_generator.single_day_matches).to eq(params[:single_day_matches])
+  end
+
+  describe '#add_day' do
+    it 'adds a day to the tournament' do
+      params = {
+        when: { '2023-09-09': { start: 9, end: 20 } }
+      }
+
+      tournament_generator =
+        described_class.new
+          .add_day('2023-09-09', 9, 20)
+
+      expect(tournament_generator.days).to eq(params[:when])
+    end
+  end
+
+  describe '#add_days' do
+    it 'adds multiple days to the tournament' do
       params = {
         when: {
-          '2023-09-09': { start: 9, end: 20 }
-        },
-        courts: 1,
-        game_length: 60,
-        rest_brake: 30,
-        single_day_matches: false,
-        subscriptions: {
-          mixed_single: [
-            { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
-            { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
-            { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
-            { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
-          ]
-        },
-        matches: {
-          mixed_single: [[1, 34], [5, 33], [10, 29], [17, 25]]
+          '2023-09-09': { start: 9, end: 20 },
+          '2023-09-10': { start: 9, end: 13 }
         }
       }
 
-      instance = double('SportsManager', call: true)
+      tournament_generator =
+        described_class.new
+          .add_days(
+            {
+              '2023-09-09': { start: 9, end: 20 },
+              '2023-09-10': { start: 9, end: 13 }
+            }
+          )
 
-      allow(described_class)
-        .to receive(:new)
-        .with(params, format: :cli)
+      expect(tournament_generator.days).to eq(params[:when])
+    end
+  end
+
+  describe '#add_subscription' do
+    it 'adds a subscription to the tournament' do
+      params = {
+        subscriptions: {
+          mixed_single: [{ id: 1, name: 'João' }]
+        }
+      }
+
+      tournament_generator =
+        described_class.new
+          .add_subscription(:mixed_single, { id: 1, name: 'João' })
+
+      expect(tournament_generator.subscriptions).to eq(params[:subscriptions])
+    end
+  end
+
+  describe '#add_subscriptions_per_category' do
+    it 'adds multiple subscriptions to the tournament' do
+      params = {
+        subscriptions: {
+          mixed_single: [
+            { id: 1, name: 'João' },
+            { id: 5, name: 'Carlos' }
+          ]
+        }
+      }
+
+      tournament_generator =
+        described_class.new
+          .add_subscriptions_per_category(:mixed_single, [
+            { id: 1, name: 'João' },
+            { id: 5, name: 'Carlos' }
+          ])
+
+      expect(tournament_generator.subscriptions).to eq(params[:subscriptions])
+    end
+  end
+
+  describe '#add_subscriptions' do
+    it 'adds multiple subscriptions to the tournament' do
+      params = {
+        subscriptions: {
+          mixed_single: [
+            { id: 1, name: 'João' },
+            { id: 5, name: 'Carlos' }
+          ],
+          womens_single: [
+            { id: 10, name: 'Laura' },
+            { id: 17, name: 'Karina' }
+          ]
+        }
+      }
+
+      tournament_generator =
+        described_class.new
+          .add_subscriptions(
+            mixed_single: [
+              { id: 1, name: 'João' },
+              { id: 5, name: 'Carlos' }
+            ],
+            womens_single: [
+              { id: 10, name: 'Laura' },
+              { id: 17, name: 'Karina' }
+            ]
+          )
+
+      expect(tournament_generator.subscriptions).to eq(params[:subscriptions])
+    end
+  end
+
+  describe '#add_match' do
+    it 'adds a match to the tournament' do
+      params = {
+        matches: {
+          mixed_single: [[1, 5]]
+        }
+      }
+
+      tournament_generator =
+        described_class.new
+          .add_match(:mixed_single, [1, 5])
+
+      expect(tournament_generator.matches).to eq(params[:matches])
+    end
+  end
+
+  describe '#add_matches_per_category' do
+    it 'adds multiple matches to the tournament' do
+      params = {
+        matches: {
+          mixed_single: [[1, 5], [10, 17]]
+        }
+      }
+
+      tournament_generator =
+        described_class.new
+          .add_matches_per_category(:mixed_single, [[1, 5], [10, 17]])
+
+      expect(tournament_generator.matches).to eq(params[:matches])
+    end
+  end
+
+  describe '#add_matches' do
+    it 'adds multiple matches to the tournament' do
+      params = {
+        matches: {
+          mixed_single: [[1, 5], [10, 17]],
+          womens_single: [[25, 2], [15, 16]]
+        }
+      }
+
+      tournament_generator =
+        described_class.new
+          .add_matches(
+            mixed_single: [[1, 5], [10, 17]],
+            womens_single: [[25, 2], [15, 16]]
+          )
+
+      expect(tournament_generator.matches).to eq(params[:matches])
+    end
+  end
+
+  describe '#add_courts' do
+    it 'adds number of courts to the tournament' do
+      params = { courts: 2 }
+
+      tournament_generator =
+        described_class.new
+          .add_courts(2)
+
+      expect(tournament_generator.courts).to eq(params[:courts])
+    end
+  end
+
+  describe '#add_game_length' do
+    it 'adds game length to the tournament' do
+      params = { game_length: 60 }
+
+      tournament_generator =
+        described_class.new
+          .add_game_length(60)
+
+      expect(tournament_generator.game_length).to eq(params[:game_length])
+    end
+  end
+
+  describe '#add_rest_break' do
+    it 'adds rest break to the tournament' do
+      params = { rest_break: 30 }
+
+      tournament_generator =
+        described_class.new
+          .add_rest_break(30)
+
+      expect(tournament_generator.rest_break).to eq(params[:rest_break])
+    end
+  end
+
+  describe '#enable_single_day_matches' do
+    it 'sets single day matches to the tournament' do
+      params = { single_day_matches: true }
+
+      tournament_generator =
+        described_class.new
+          .enable_single_day_matches(true)
+
+      expect(tournament_generator.single_day_matches).to eq(params[:single_day_matches])
+    end
+  end
+
+  describe '.example' do
+    it 'runs an example for a tournament scheduling' do
+      instance = instance_double('SportsManager::TournamentGenerator')
+      allow(instance).to receive(:call)
+      allow(instance).to receive(:add_days).and_return(instance)
+      allow(instance).to receive(:add_subscriptions).and_return(instance)
+      allow(instance).to receive(:add_matches).and_return(instance)
+      allow(instance).to receive(:add_courts).and_return(instance)
+      allow(instance).to receive(:add_game_length).and_return(instance)
+      allow(instance).to receive(:add_rest_break).and_return(instance)
+      allow(instance).to receive(:enable_single_day_matches).and_return(instance)
+
+      expect(described_class).to receive(:new)
+        .with(format: :cli)
         .and_return(instance)
 
-      described_class.example
+      expect(instance).to receive(:call)
 
-      expect(instance).to have_received(:call)
+      described_class.example
     end
 
     context 'when receives a type' do
       it 'runs the example based on type' do
-        instance = double('SportsManager', call: true)
-
         allow(SportsManager::Helper)
           .to receive(:public_send)
           .with(:complex)
           .and_return({ a: 1 })
 
-        allow(described_class).to receive(:new).and_return(instance)
+        instance = instance_double('SportsManager::TournamentGenerator')
+        allow(instance).to receive(:call)
+        allow(instance).to receive(:add_days).and_return(instance)
+        allow(instance).to receive(:add_subscriptions).and_return(instance)
+        allow(instance).to receive(:add_matches).and_return(instance)
+        allow(instance).to receive(:add_courts).and_return(instance)
+        allow(instance).to receive(:add_game_length).and_return(instance)
+        allow(instance).to receive(:add_rest_break).and_return(instance)
+        allow(instance).to receive(:enable_single_day_matches).and_return(instance)
+
+        expect(described_class).to receive(:new)
+          .with(format: :cli)
+          .and_return(instance)
 
         described_class.example(:complex)
 
@@ -63,21 +376,6 @@ RSpec.describe SportsManager::TournamentGenerator do
     end
   end
 
-  describe '.call' do
-    it 'instantiate and invokes the call method' do
-      instance = double('SportsManager', call: true)
-
-      allow(described_class)
-        .to receive(:new)
-        .with({ a: 1 }, format: :cli)
-        .and_return(instance)
-
-      described_class.call({ a: 1 })
-
-      expect(instance).to have_received(:call)
-    end
-  end
-
   describe '#call' do
     before do
       allow($stdout).to receive(:puts)
@@ -88,7 +386,7 @@ RSpec.describe SportsManager::TournamentGenerator do
         when: { '2023-09-09': { start: 9, end: 10 } },
         courts: 1,
         game_length: 60,
-        rest_brake: 30,
+        rest_break: 30,
         single_day_matches: false,
         subscriptions: {
           mixed_single: [
@@ -99,7 +397,16 @@ RSpec.describe SportsManager::TournamentGenerator do
         matches: { mixed_single: [[1, 5]] }
       }
 
-      tournament_solution = described_class.new(params).call
+      tournament_solution =
+        described_class.new
+          .add_days(params[:when])
+          .add_subscriptions(params[:subscriptions])
+          .add_matches(params[:matches])
+          .add_game_length(params[:game_length])
+          .add_rest_break(params[:rest_break])
+          .add_courts(params[:courts])
+          .enable_single_day_matches(params[:single_day_matches])
+          .call
 
       solution, = tournament_solution.solutions
 
@@ -144,26 +451,28 @@ RSpec.describe SportsManager::TournamentGenerator do
     end
 
     it 'calls a drawer with the tournament solution' do
-      params = {
-        when: { '2023-09-09': { start: 9, end: 10 } },
-        courts: 1,
-        game_length: 60,
-        rest_brake: 30,
-        single_day_matches: false,
-        subscriptions: {
-          mixed_single: [
-            { id: 1, name: 'João' },
-            { id: 5, name: 'Carlos' }
-          ]
-        },
-        matches: { mixed_single: [[1, 5]] }
-      }
       drawer_class = SportsManager::SolutionDrawer
       drawer = instance_double(drawer_class, cli: true)
 
       allow(drawer_class).to receive(:new).and_return(drawer)
 
-      tournament_solution = described_class.new(params).call
+      tournament_solution =
+        described_class.new
+          .add_day('2023-09-09', 9, 10)
+          .add_subscriptions(
+            {
+              mixed_single: [
+                { id: 1, name: 'João' },
+                { id: 5, name: 'Carlos' }
+              ]
+            }
+          )
+          .add_match(:mixed_single, [1, 5])
+          .add_game_length(60)
+          .add_rest_break(30)
+          .add_courts(1)
+          .enable_single_day_matches(false)
+          .call
 
       expect(drawer_class).to have_received(:new).with(tournament_solution)
       expect(drawer).to have_received(:cli)
@@ -175,7 +484,7 @@ RSpec.describe SportsManager::TournamentGenerator do
           when: { '2023-09-09': { start: 9, end: 9 } },
           courts: 1,
           game_length: 60,
-          rest_brake: 30,
+          rest_break: 30,
           single_day_matches: false,
           subscriptions: {
             mixed_single: [
@@ -188,7 +497,18 @@ RSpec.describe SportsManager::TournamentGenerator do
           matches: { mixed_single: [[1, 5], [17, 18]] }
         }
 
-        tournament_solution = described_class.new(params).call
+        tournament_solution =
+          described_class.new
+            .add_days(
+              params[:when]
+            )
+            .add_subscriptions(params[:subscriptions])
+            .add_matches(params[:matches])
+            .add_game_length(params[:game_length])
+            .add_rest_break(params[:rest_break])
+            .add_courts(params[:courts])
+            .enable_single_day_matches(params[:single_day_matches])
+            .call
 
         expect(tournament_solution.solutions).to be_empty
       end
@@ -203,7 +523,7 @@ RSpec.describe SportsManager::TournamentGenerator do
           },
           courts: 2,
           game_length: 60,
-          rest_brake: 30,
+          rest_break: 30,
           single_day_matches: false,
           subscriptions: {
             mens_single: [
@@ -226,7 +546,18 @@ RSpec.describe SportsManager::TournamentGenerator do
           }
         }
 
-        tournament_solution = described_class.new(params).call
+        tournament_solution =
+          described_class.new
+            .add_days(params[:when])
+            .add_subscriptions(
+              params[:subscriptions]
+            )
+            .add_matches(params[:matches])
+            .add_courts(params[:courts])
+            .add_game_length(params[:game_length])
+            .add_rest_break(params[:rest_break])
+            .enable_single_day_matches(params[:single_day_matches])
+            .call
 
         json = tournament_solution.as_json.deep_symbolize_keys
 
@@ -363,6 +694,110 @@ RSpec.describe SportsManager::TournamentGenerator do
           }
         )
       end
+    end
+
+    it 'generates matches automatically when no matches are provided' do
+      params = {
+        when: { '2023-09-09': { start: 9, end: 20 } },
+        courts: 2,
+        game_length: 60,
+        rest_break: 30,
+        single_day_matches: true,
+        subscriptions: {
+          mixed_single: [
+            { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
+            { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
+            { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
+            { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
+          ]
+        }
+      }
+
+      generated_matches = {
+        mixed_single: [[1, 34], [5, 33], [10, 29], [17, 25]]
+      }
+      allow(SportsManager::MatchesGenerator).to receive(:call).and_return(generated_matches)
+
+      tournament_solution = described_class.new
+        .add_days(params[:when])
+        .add_subscriptions(params[:subscriptions])
+        .add_courts(params[:courts])
+        .add_game_length(params[:game_length])
+        .add_rest_break(params[:rest_break])
+        .enable_single_day_matches(params[:single_day_matches])
+        .call
+
+      expect(SportsManager::MatchesGenerator).to have_received(:call)
+
+      expect(tournament_solution.tournament.matches[:mixed_single]).to include(
+        have_attributes(
+          category: :mixed_single,
+          participants: [
+            have_attributes(id: 1, name: 'João'),
+            have_attributes(id: 34, name: 'Cleber')
+          ]
+        ),
+        have_attributes(
+          category: :mixed_single,
+          participants: [
+            have_attributes(id: 5, name: 'Carlos'),
+            have_attributes(id: 33, name: 'Erica')
+          ]
+        ),
+        have_attributes(
+          category: :mixed_single,
+          participants: [
+            have_attributes(id: 10, name: 'Daniel'),
+            have_attributes(id: 29, name: 'Carolina')
+          ]
+        ),
+        have_attributes(
+          category: :mixed_single,
+          participants: [
+            have_attributes(id: 17, name: 'Laura'),
+            have_attributes(id: 25, name: 'Joana')
+          ]
+        )
+      )
+    end
+  end
+  describe '#matches_generator' do
+    it 'generates matches when no matches are provided' do
+      generator = described_class.new
+      generator.subscriptions = {
+        mixed_single: [
+          { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
+          { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
+          { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
+          { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
+        ]
+      }
+
+      generated_matches = {
+        mixed_single: [[1, 34], [5, 33], [10, 29], [17, 25]]
+      }
+      allow(SportsManager::MatchesGenerator).to receive(:call).and_return(generated_matches)
+
+      result = generator.send(:matches_generator)
+
+      expect(SportsManager::MatchesGenerator).to have_received(:call).with(generator.subscriptions)
+
+      expect(result).to eq(generated_matches)
+    end
+
+    it 'returns provided matches when matches are present' do
+      allow(SportsManager::MatchesGenerator).to receive(:call)
+
+      generator = described_class.new
+      provided_matches = {
+        mixed_single: [[1, 34], [5, 33], [10, 29], [17, 25]]
+      }
+      generator.matches = provided_matches
+      result = generator.send(:matches)
+
+      expect(SportsManager::MatchesGenerator).not_to have_received(:call)
+
+      expect(result).to eq(provided_matches)
     end
   end
 end

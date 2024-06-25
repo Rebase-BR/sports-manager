@@ -21,26 +21,102 @@ module SportsManager
   class TournamentGenerator
     extend Forwardable
 
-    attr_reader :params, :format, :tournament, :variables, :domains,
+    attr_reader :format, :tournament, :variables, :domains,
                 :ordering, :filtering, :csp
 
-    def_delegators :tournament, :match_time, :timeslots, :matches
+    attr_accessor :days, :subscriptions, :matches, :courts, :game_length, :rest_break, :single_day_matches
+
+    def_delegators :tournament, :match_time, :timeslots
 
     def self.example(type = :simple, format: :cli)
       params = Helper.public_send(type)
 
-      new(params, format: format).call
+      new(format: format)
+        .add_days(params[:when])
+        .add_subscriptions(params[:subscriptions])
+        .add_matches(params[:matches])
+        .add_courts(params[:courts])
+        .add_game_length(params[:game_length])
+        .add_rest_break(params[:rest_break])
+        .enable_single_day_matches(params[:single_day_matches])
+        .call
     end
 
-    def self.call(params, format: :cli)
-      new(params, format: format).call
-    end
-
-    def initialize(params, format: :cli)
-      @params = params
+    def initialize(format: :cli)
       @format = format
+      @days = {}
+      @subscriptions = {}
+      @matches = {}
       @ordering = Algorithms::Ordering::MultipleMatchesParticipant
       @filtering = Algorithms::Filtering::NoOverlap
+    end
+
+    def add_day(day, start, finish)
+      days[day.to_sym] = { start: start, end: finish }
+      self
+    end
+
+    def add_days(days)
+      days.each do |day, time_hash|
+        add_day(day, time_hash[:start], time_hash[:end])
+      end
+      self
+    end
+
+    def add_subscription(category, subscription)
+      subscriptions[category] ||= []
+      subscriptions[category] << subscription
+      self
+    end
+
+    def add_subscriptions_per_category(category, subscriptions)
+      subscriptions.each { |subscription| add_subscription(category, subscription) }
+      self
+    end
+
+    def add_subscriptions(subscriptions)
+      subscriptions.each do |category, subscriptions_per_category|
+        add_subscriptions_per_category(category, subscriptions_per_category)
+      end
+      self
+    end
+
+    def add_match(category, match)
+      matches[category] ||= []
+      matches[category] << match
+      self
+    end
+
+    def add_matches_per_category(category, matches)
+      matches.each { |match| add_match(category, match) }
+      self
+    end
+
+    def add_matches(matches)
+      matches.each do |category, matches_per_category|
+        add_matches_per_category(category, matches_per_category)
+      end
+      self
+    end
+
+    def add_courts(number_of_courts)
+      @courts = number_of_courts
+      self
+    end
+
+    def add_game_length(game_length)
+      @game_length = game_length
+      self
+    end
+
+    def add_rest_break(rest_break)
+      @rest_break = rest_break
+      self
+    end
+
+    def enable_single_day_matches(single_day_matches)
+      @single_day_matches = single_day_matches
+      self
     end
 
     def call
@@ -56,7 +132,7 @@ module SportsManager
     private
 
     def setup
-      @tournament = ProblemParser.call(params)
+      @tournament = build_tournament
 
       @variables = @tournament.matches.values.flat_map(&:itself)
 
@@ -77,6 +153,26 @@ module SportsManager
         .add_constraint(Constraints::MultiCategoryConstraint)
         .add_constraint(Constraints::NextRoundConstraint)
         .build
+    end
+
+    def build_tournament
+      @matches = matches_generator
+      TournamentBuilder
+        .new
+        .add_matches(matches)
+        .add_subscriptions(subscriptions)
+        .add_schedule(days)
+        .add_configuration(key: :courts, value: courts)
+        .add_configuration(key: :match_time, value: game_length)
+        .add_configuration(key: :break_time, value: rest_break)
+        .add_configuration(key: :single_day_matches, value: single_day_matches)
+        .build
+    end
+
+    def matches_generator
+      return matches if matches && !matches.empty?
+
+      MatchesGenerator.call(subscriptions)
     end
 
     def print_solution(tournament_solution)

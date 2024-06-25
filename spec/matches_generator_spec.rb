@@ -20,22 +20,20 @@ RSpec.describe SportsManager::MatchesGenerator do
 
   describe '#call' do
     it 'generates an even number of matches for subscribers' do
-      payload = {
-        subscriptions: {
-          mens_single: [
-            { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
-            { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
-            { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
-            { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
-            { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
-            { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
-            { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
-            { id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }
-          ]
-        }
+      subscriptions = {
+        mens_single: [
+          { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+          { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+          { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+          { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+          { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
+          { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
+          { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
+          { id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }
+        ]
       }
 
-      matches = described_class.call(payload)
+      matches = described_class.call(subscriptions)
 
       expect(matches).to match(a_hash_including(
                                  mens_single: [
@@ -47,19 +45,17 @@ RSpec.describe SportsManager::MatchesGenerator do
 
     context 'when participants is even but not power of 2' do
       it 'generates an odd number of matches' do
-        payload = {
-          subscriptions: {
-            mens_single: [
-              { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
-              { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
-              { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
-              { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
-              { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }
-            ]
-          }
+        subscriptions = {
+          mens_single: [
+            { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+            { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+            { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+            { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+            { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }
+          ]
         }
 
-        matches = described_class.call(payload)
+        matches = described_class.call(subscriptions)
 
         expect(matches).to match(a_hash_including(
                                    mens_single: [
@@ -72,17 +68,15 @@ RSpec.describe SportsManager::MatchesGenerator do
 
     context 'when participants is odd' do
       it 'generates matches and byes (match with one subscriber)' do
-        payload = {
-          subscriptions: {
-            mens_single: [
-              { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
-              { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
-              { id: 5, name: 'Carlos' }
-            ]
-          }
+        subscriptions = {
+          mens_single: [
+            { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+            { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+            { id: 5, name: 'Carlos' }
+          ]
         }
 
-        matches = described_class.call(payload)
+        matches = described_class.call(subscriptions)
 
         expect(matches).to match(a_hash_including(
                                    mens_single: [
@@ -96,22 +90,20 @@ RSpec.describe SportsManager::MatchesGenerator do
 
     context 'when double' do
       it 'generates even matches for subscribers' do
-        payload = {
-          subscriptions: {
-            mens_double: [
-              [{ id: 1, name: 'João' },    { id: 2, name: 'Marcelo' }],
-              [{ id: 3, name: 'José' },    { id: 4, name: 'Pedro' }],
-              [{ id: 5, name: 'Carlos' },  { id: 6, name: 'Leandro' }],
-              [{ id: 7, name: 'Leonardo' }, { id: 8, name: 'Cláudio' }],
-              [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
-              [{ id: 11, name: 'Marcos' }, { id: 12, name: 'Henrique' }],
-              [{ id: 13, name: 'Joaquim' }, { id: 14, name: 'Alex' }],
-              [{ id: 15, name: 'Bruno' }, { id: 16, name: 'Fábio' }]
-            ]
-          }
+        subscriptions = {
+          mens_double: [
+            [{ id: 1, name: 'João' },    { id: 2, name: 'Marcelo' }],
+            [{ id: 3, name: 'José' },    { id: 4, name: 'Pedro' }],
+            [{ id: 5, name: 'Carlos' },  { id: 6, name: 'Leandro' }],
+            [{ id: 7, name: 'Leonardo' }, { id: 8, name: 'Cláudio' }],
+            [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
+            [{ id: 11, name: 'Marcos' }, { id: 12, name: 'Henrique' }],
+            [{ id: 13, name: 'Joaquim' }, { id: 14, name: 'Alex' }],
+            [{ id: 15, name: 'Bruno' }, { id: 16, name: 'Fábio' }]
+          ]
         }
 
-        matches = described_class.call(payload)
+        matches = described_class.call(subscriptions)
 
         expect(matches).to match(a_hash_including(
                                    mens_double: [
@@ -125,76 +117,66 @@ RSpec.describe SportsManager::MatchesGenerator do
     end
 
     it 'generates matches for the subscribers' do
-      payload = {
-        when: {
-          '2023-09-09': { start: 9, end: 20 },
-          '2023-09-10': { start: 9, end: 13 }
-        },
-        courts: 2,
-        game_length: 60,
-        rest_brake: 30,
-        single_day_matches: false,
-        subscriptions: {
-          mens_single: [
-            { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
-            { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
-            { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
-            { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
-            { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
-            { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
-            { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
-            { id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }
-          ],
-          mens_double: [
-            [{ id: 1, name: 'João' },    { id: 2, name: 'Marcelo' }],
-            [{ id: 3, name: 'José' },    { id: 4, name: 'Pedro' }],
-            [{ id: 5, name: 'Carlos' },  { id: 6, name: 'Leandro' }],
-            [{ id: 7, name: 'Leonardo' }, { id: 8, name: 'Cláudio' }],
-            [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
-            [{ id: 11, name: 'Marcos' }, { id: 12, name: 'Henrique' }],
-            [{ id: 13, name: 'Joaquim' }, { id: 14, name: 'Alex' }],
-            [{ id: 15, name: 'Bruno' }, { id: 16, name: 'Fábio' }]
-          ],
-          womens_double: [
-            [{ id: 17, name: 'Laura' },    { id: 18, name: 'Karina' }],
-            [{ id: 19, name: 'Camila' },   { id: 20, name: 'Bruna' }],
-            [{ id: 21, name: 'Aline' },    { id: 22, name: 'Cintia' }],
-            [{ id: 23, name: 'Maria' },    { id: 24, name: 'Elis' }],
-            [{ id: 25, name: 'Joana' },    { id: 26, name: 'Izadora' }],
-            [{ id: 27, name: 'Claudia' },  { id: 28, name: 'Marina' }],
-            [{ id: 29, name: 'Carolina' }, { id: 30, name: 'Patricia' }],
-            [{ id: 31, name: 'Jéssica' },  { id: 32, name: 'Daniela' }]
-          ],
-          womens_single: [
-            { id: 17, name: 'Laura' },    { id: 18, name: 'Karina' },
-            { id: 19, name: 'Camila' },   { id: 20, name: 'Bruna' },
-            { id: 21, name: 'Aline' },    { id: 22, name: 'Cintia' },
-            { id: 23, name: 'Maria' },    { id: 24, name: 'Elis' },
-            { id: 25, name: 'Joana' },    { id: 26, name: 'Izadora' },
-            { id: 27, name: 'Claudia' },  { id: 28, name: 'Marina' },
-            { id: 29, name: 'Carolina' }, { id: 30, name: 'Patricia' },
-            { id: 31, name: 'Jéssica' },  { id: 32, name: 'Daniela' }
-          ],
-          mixed_single: [
-            { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
-            { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
-            { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
-            { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
-          ],
-          mixed_double: [
-            [{ id: 1, name: 'João' },      { id: 2, name: 'Laura' }],
-            [{ id: 3, name: 'José' },      { id: 4, name: 'Carolina' }],
-            [{ id: 5, name: 'Erica' },     { id: 6, name: 'Leandro' }],
-            [{ id: 7, name: 'Leonardo' },  { id: 8, name: 'Joana' }],
-            [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
-            [{ id: 11, name: 'Marcos' },   { id: 12, name: 'Rafaela' }],
-            [{ id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' }],
-            [{ id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }]
-          ]
-        }
+      subscriptions = {
+        mens_single: [
+          { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+          { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+          { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+          { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+          { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
+          { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
+          { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
+          { id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }
+        ],
+        mens_double: [
+          [{ id: 1, name: 'João' },    { id: 2, name: 'Marcelo' }],
+          [{ id: 3, name: 'José' },    { id: 4, name: 'Pedro' }],
+          [{ id: 5, name: 'Carlos' },  { id: 6, name: 'Leandro' }],
+          [{ id: 7, name: 'Leonardo' }, { id: 8, name: 'Cláudio' }],
+          [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
+          [{ id: 11, name: 'Marcos' }, { id: 12, name: 'Henrique' }],
+          [{ id: 13, name: 'Joaquim' }, { id: 14, name: 'Alex' }],
+          [{ id: 15, name: 'Bruno' }, { id: 16, name: 'Fábio' }]
+        ],
+        womens_double: [
+          [{ id: 17, name: 'Laura' },    { id: 18, name: 'Karina' }],
+          [{ id: 19, name: 'Camila' },   { id: 20, name: 'Bruna' }],
+          [{ id: 21, name: 'Aline' },    { id: 22, name: 'Cintia' }],
+          [{ id: 23, name: 'Maria' },    { id: 24, name: 'Elis' }],
+          [{ id: 25, name: 'Joana' },    { id: 26, name: 'Izadora' }],
+          [{ id: 27, name: 'Claudia' },  { id: 28, name: 'Marina' }],
+          [{ id: 29, name: 'Carolina' }, { id: 30, name: 'Patricia' }],
+          [{ id: 31, name: 'Jéssica' },  { id: 32, name: 'Daniela' }]
+        ],
+        womens_single: [
+          { id: 17, name: 'Laura' },    { id: 18, name: 'Karina' },
+          { id: 19, name: 'Camila' },   { id: 20, name: 'Bruna' },
+          { id: 21, name: 'Aline' },    { id: 22, name: 'Cintia' },
+          { id: 23, name: 'Maria' },    { id: 24, name: 'Elis' },
+          { id: 25, name: 'Joana' },    { id: 26, name: 'Izadora' },
+          { id: 27, name: 'Claudia' },  { id: 28, name: 'Marina' },
+          { id: 29, name: 'Carolina' }, { id: 30, name: 'Patricia' },
+          { id: 31, name: 'Jéssica' },  { id: 32, name: 'Daniela' }
+        ],
+        mixed_single: [
+          { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
+          { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
+          { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
+          { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
+        ],
+        mixed_double: [
+          [{ id: 1, name: 'João' },      { id: 2, name: 'Laura' }],
+          [{ id: 3, name: 'José' },      { id: 4, name: 'Carolina' }],
+          [{ id: 5, name: 'Erica' },     { id: 6, name: 'Leandro' }],
+          [{ id: 7, name: 'Leonardo' },  { id: 8, name: 'Joana' }],
+          [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
+          [{ id: 11, name: 'Marcos' },   { id: 12, name: 'Rafaela' }],
+          [{ id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' }],
+          [{ id: 15, name: 'Bruno' },    { id: 16, name: 'Fábio' }]
+        ]
       }
 
-      matches = described_class.call(payload)
+      matches = described_class.call(subscriptions)
 
       expect(matches)
         .to match(a_hash_including(
@@ -209,73 +191,63 @@ RSpec.describe SportsManager::MatchesGenerator do
     end
 
     it 'generates matches for the subscribers but the number of participants or doubles are even' do
-      payload = {
-        when: {
-          '2023-09-09': { start: 9, end: 20 },
-          '2023-09-10': { start: 9, end: 13 }
-        },
-        courts: 2,
-        game_length: 60,
-        rest_brake: 30,
-        single_day_matches: false,
-        subscriptions: {
-          mens_single: [
-            { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
-            { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
-            { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
-            { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
-            { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
-            { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
-            { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
-            { id: 15, name: 'Bruno' }
-          ],
-          mens_double: [
-            [{ id: 1, name: 'João' },    { id: 2, name: 'Marcelo' }],
-            [{ id: 3, name: 'José' },    { id: 4, name: 'Pedro' }],
-            [{ id: 5, name: 'Carlos' },  { id: 6, name: 'Leandro' }],
-            [{ id: 7, name: 'Leonardo' }, { id: 8, name: 'Cláudio' }],
-            [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
-            [{ id: 11, name: 'Marcos' }, { id: 12, name: 'Henrique' }],
-            [{ id: 13, name: 'Joaquim' }, { id: 14, name: 'Alex' }]
-          ],
-          womens_double: [
-            [{ id: 17, name: 'Laura' },    { id: 18, name: 'Karina' }],
-            [{ id: 19, name: 'Camila' },   { id: 20, name: 'Bruna' }],
-            [{ id: 21, name: 'Aline' },    { id: 22, name: 'Cintia' }],
-            [{ id: 23, name: 'Maria' },    { id: 24, name: 'Elis' }],
-            [{ id: 25, name: 'Joana' },    { id: 26, name: 'Izadora' }],
-            [{ id: 27, name: 'Claudia' },  { id: 28, name: 'Marina' }],
-            [{ id: 29, name: 'Carolina' }, { id: 30, name: 'Patricia' }]
-          ],
-          womens_single: [
-            { id: 17, name: 'Laura' },    { id: 18, name: 'Karina' },
-            { id: 19, name: 'Camila' },   { id: 20, name: 'Bruna' },
-            { id: 21, name: 'Aline' },    { id: 22, name: 'Cintia' },
-            { id: 23, name: 'Maria' },    { id: 24, name: 'Elis' },
-            { id: 25, name: 'Joana' },    { id: 26, name: 'Izadora' },
-            { id: 27, name: 'Claudia' },  { id: 28, name: 'Marina' },
-            { id: 29, name: 'Carolina' }, { id: 30, name: 'Patricia' },
-            { id: 31, name: 'Jéssica' }
-          ],
-          mixed_single: [
-            { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
-            { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
-            { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
-            { id: 33, name: 'Erica' }
-          ],
-          mixed_double: [
-            [{ id: 1, name: 'João' },      { id: 2, name: 'Laura' }],
-            [{ id: 3, name: 'José' },      { id: 4, name: 'Carolina' }],
-            [{ id: 5, name: 'Erica' },     { id: 6, name: 'Leandro' }],
-            [{ id: 7, name: 'Leonardo' },  { id: 8, name: 'Joana' }],
-            [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
-            [{ id: 11, name: 'Marcos' },   { id: 12, name: 'Rafaela' }],
-            [{ id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' }]
-          ]
-        }
+      subscriptions = {
+        mens_single: [
+          { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+          { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+          { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+          { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+          { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
+          { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' },
+          { id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' },
+          { id: 15, name: 'Bruno' }
+        ],
+        mens_double: [
+          [{ id: 1, name: 'João' },    { id: 2, name: 'Marcelo' }],
+          [{ id: 3, name: 'José' },    { id: 4, name: 'Pedro' }],
+          [{ id: 5, name: 'Carlos' },  { id: 6, name: 'Leandro' }],
+          [{ id: 7, name: 'Leonardo' }, { id: 8, name: 'Cláudio' }],
+          [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
+          [{ id: 11, name: 'Marcos' }, { id: 12, name: 'Henrique' }],
+          [{ id: 13, name: 'Joaquim' }, { id: 14, name: 'Alex' }]
+        ],
+        womens_double: [
+          [{ id: 17, name: 'Laura' },    { id: 18, name: 'Karina' }],
+          [{ id: 19, name: 'Camila' },   { id: 20, name: 'Bruna' }],
+          [{ id: 21, name: 'Aline' },    { id: 22, name: 'Cintia' }],
+          [{ id: 23, name: 'Maria' },    { id: 24, name: 'Elis' }],
+          [{ id: 25, name: 'Joana' },    { id: 26, name: 'Izadora' }],
+          [{ id: 27, name: 'Claudia' },  { id: 28, name: 'Marina' }],
+          [{ id: 29, name: 'Carolina' }, { id: 30, name: 'Patricia' }]
+        ],
+        womens_single: [
+          { id: 17, name: 'Laura' },    { id: 18, name: 'Karina' },
+          { id: 19, name: 'Camila' },   { id: 20, name: 'Bruna' },
+          { id: 21, name: 'Aline' },    { id: 22, name: 'Cintia' },
+          { id: 23, name: 'Maria' },    { id: 24, name: 'Elis' },
+          { id: 25, name: 'Joana' },    { id: 26, name: 'Izadora' },
+          { id: 27, name: 'Claudia' },  { id: 28, name: 'Marina' },
+          { id: 29, name: 'Carolina' }, { id: 30, name: 'Patricia' },
+          { id: 31, name: 'Jéssica' }
+        ],
+        mixed_single: [
+          { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
+          { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
+          { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
+          { id: 33, name: 'Erica' }
+        ],
+        mixed_double: [
+          [{ id: 1, name: 'João' },      { id: 2, name: 'Laura' }],
+          [{ id: 3, name: 'José' },      { id: 4, name: 'Carolina' }],
+          [{ id: 5, name: 'Erica' },     { id: 6, name: 'Leandro' }],
+          [{ id: 7, name: 'Leonardo' },  { id: 8, name: 'Joana' }],
+          [{ id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' }],
+          [{ id: 11, name: 'Marcos' },   { id: 12, name: 'Rafaela' }],
+          [{ id: 13, name: 'Joaquim' },  { id: 14, name: 'Alex' }]
+        ]
       }
 
-      matches = described_class.call(payload)
+      matches = described_class.call(subscriptions)
 
       expect(matches)
         .to match(a_hash_including(
