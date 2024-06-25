@@ -459,7 +459,8 @@ RSpec.describe SportsManager::MatchBuilder do
             { id: 2, participants: [3, 4] }
           ]
 
-          participant_ids = described_class.new(category: :mixed_single, matches: matches, teams: []).send(:extract_participant_ids)
+          participant_ids = described_class.new(category: :mixed_single, matches: matches,
+                                                teams: []).send(:extract_participant_ids)
 
           expect(participant_ids).to match_array [[1, 2], [3, 4]]
         end
@@ -471,7 +472,8 @@ RSpec.describe SportsManager::MatchBuilder do
             { id: 1, participants: [[1, 2], [3, 4]] }
           ]
 
-          participant_ids = described_class.new(category: :mixed_single, matches: matches, teams: []).send(:extract_participant_ids)
+          participant_ids = described_class.new(category: :mixed_single, matches: matches,
+                                                teams: []).send(:extract_participant_ids)
 
           expect(participant_ids).to match_array [[[1, 2], [3, 4]]]
         end
@@ -482,7 +484,8 @@ RSpec.describe SportsManager::MatchBuilder do
       it 'returns a list of participant ids' do
         matches = [[1, 2], [3, 4]]
 
-        participant_ids = described_class.new(category: :mixed_single, matches: matches, teams: []).send(:extract_participant_ids)
+        participant_ids = described_class.new(category: :mixed_single, matches: matches,
+                                              teams: []).send(:extract_participant_ids)
 
         expect(participant_ids).to match_array [[1, 2], [3, 4]]
       end
@@ -493,7 +496,8 @@ RSpec.describe SportsManager::MatchBuilder do
       it 'returns true' do
         matches = [{ id: 1, participants: [1, 2] }]
 
-        result = described_class.new(category: :mixed_single, matches: matches, teams: []).send(:matches_has_already_generated_matches_structure?)
+        result = described_class.new(category: :mixed_single, matches: matches,
+                                     teams: []).send(:matches_has_already_generated_matches_structure?)
 
         expect(result).to be_truthy
       end
@@ -503,7 +507,8 @@ RSpec.describe SportsManager::MatchBuilder do
       it 'returns false' do
         matches = [[1, 2]]
 
-        result = described_class.new(category: :mixed_single, matches: matches, teams: []).send(:matches_has_already_generated_matches_structure?)
+        result = described_class.new(category: :mixed_single, matches: matches,
+                                     teams: []).send(:matches_has_already_generated_matches_structure?)
 
         expect(result).to be_falsey
       end
@@ -528,7 +533,9 @@ RSpec.describe SportsManager::MatchBuilder do
 
         teams = [team1, team2, team3, team4]
 
-        matches_result = described_class.new(category: :mixed_single, matches: matches, teams: teams).send(:build_already_generated_matches, matches)
+        matches_result = described_class.new(category: :mixed_single, matches: matches, teams: teams).send(
+          :build_already_generated_matches, matches
+        )
 
         expect(matches_result).to match_array [
           have_attributes(
@@ -563,7 +570,9 @@ RSpec.describe SportsManager::MatchBuilder do
 
         teams = [team1, team2, team3]
 
-        matches_result = described_class.new(category: :mixed_single, matches: matches, teams: teams).send(:build_already_generated_matches, matches)
+        matches_result = described_class.new(category: :mixed_single, matches: matches, teams: teams).send(
+          :build_already_generated_matches, matches
+        )
 
         expect(matches_result).to match_array [
           have_attributes(
@@ -604,7 +613,9 @@ RSpec.describe SportsManager::MatchBuilder do
 
         teams = [team1, team2, team3, team4]
 
-        matches_result = described_class.new(category: :mixed_single, matches: matches, teams: teams).send(:build_already_generated_matches, matches)
+        matches_result = described_class.new(category: :mixed_single, matches: matches, teams: teams).send(
+          :build_already_generated_matches, matches
+        )
 
         expect(matches_result).to match_array [
           have_attributes(
@@ -618,7 +629,7 @@ RSpec.describe SportsManager::MatchBuilder do
             id: 2,
             team1: team3,
             team2: team4
-          ),
+          )
         ]
       end
     end
@@ -644,7 +655,9 @@ RSpec.describe SportsManager::MatchBuilder do
 
         teams = [team1, team2, team3]
 
-        matches_result = described_class.new(category: :mixed_single, matches: matches, teams: teams).send(:build_already_generated_matches, matches)
+        matches_result = described_class.new(category: :mixed_single, matches: matches, teams: teams).send(
+          :build_already_generated_matches, matches
+        )
 
         expect(matches_result).to match_array [
           have_attributes(
