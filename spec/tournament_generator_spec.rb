@@ -381,6 +381,77 @@ RSpec.describe SportsManager::TournamentGenerator do
       allow($stdout).to receive(:puts)
     end
 
+    context 'when already generated matches are passed' do
+      it 'returns a scheduling solution for tournament' do
+        params = {
+          when: {
+            '2023-09-09': { start: 9, end: 20 },
+            '2023-09-10': { start: 9, end: 13 }
+          },
+          courts: 2,
+          game_length: 60,
+          rest_brake: 30,
+          single_day_matches: false,
+          subscriptions: {
+            mens_single: [
+              { id: 3, name: 'João' }, { id: 6, name: 'Marcelo' }
+            ]
+          },
+          matches: {
+            mens_single: [
+              { id: 100, participants: [3, 6] }
+            ]
+          }
+        }
+
+        tournament_solution =
+          described_class.new
+            .add_days(params[:when])
+            .add_subscriptions(params[:subscriptions])
+            .add_matches(params[:matches])
+            .add_courts(params[:courts])
+            .add_game_length(params[:game_length])
+            .add_rest_break(params[:rest_break])
+            .enable_single_day_matches(params[:single_day_matches])
+            .call
+
+        solution, = tournament_solution.solutions
+
+        expect(tournament_solution).to be_a SportsManager::TournamentSolution
+        expect(solution.fixtures).to match_array [
+          have_attributes(
+            class: SportsManager::TournamentSolution::Fixture,
+            match: have_attributes(
+              class: SportsManager::Match,
+              category: :mens_single,
+              id: 100,
+              round: 0,
+              depends_on: [],
+              team1: have_attributes(
+                class: SportsManager::SingleTeam,
+                category: :mens_single,
+                participants: [
+                  have_attributes(class: SportsManager::Participant, id: 3, name: 'João')
+                ]
+              ),
+              team2: have_attributes(
+                class: SportsManager::SingleTeam,
+                category: :mens_single,
+                participants: [
+                  have_attributes(class: SportsManager::Participant, id: 6, name: 'Marcelo')
+                ]
+              )
+            ),
+            timeslot: have_attributes(
+              class: SportsManager::Timeslot,
+              court: 0,
+              slot: Time.parse('2023-09-09T09:00:00')
+            )
+          )
+        ]
+      end
+    end
+
     it 'returns a scheduling solution for tournament' do
       params = {
         when: { '2023-09-09': { start: 9, end: 10 } },

@@ -158,11 +158,11 @@ RSpec.describe SportsManager::Tournament do
 
   describe '#matches' do
     it 'returns all matches from each group' do
-      matches_x = [instance_double(SportsManager::Match)]
-      matches_y = [instance_double(SportsManager::Match)]
+      matches_x = [instance_double(SportsManager::Match, depends_on: [])]
+      matches_y = [instance_double(SportsManager::Match, depends_on: [])]
       groups = [
-        instance_double(SportsManager::Group, category: :x, matches: matches_x),
-        instance_double(SportsManager::Group, category: :y, matches: matches_y)
+        instance_double(SportsManager::Group, category: :x, matches: matches_x, initial_matches: matches_x),
+        instance_double(SportsManager::Group, category: :y, matches: matches_y, initial_matches: matches_y)
       ]
 
       tournament = described_class.new(settings: spy, groups: groups)
@@ -174,17 +174,17 @@ RSpec.describe SportsManager::Tournament do
   describe '#total_matches' do
     it 'returns total number of matches from all groups' do
       matches_x = [
-        instance_double(SportsManager::Match),
-        instance_double(SportsManager::Match)
+        instance_double(SportsManager::Match, depends_on: []),
+        instance_double(SportsManager::Match, depends_on: [])
       ]
       matches_y = [
-        instance_double(SportsManager::Match),
-        instance_double(SportsManager::Match),
-        instance_double(SportsManager::Match)
+        instance_double(SportsManager::Match, depends_on: []),
+        instance_double(SportsManager::Match, depends_on: []),
+        instance_double(SportsManager::Match, depends_on: [])
       ]
       groups = [
-        instance_double(SportsManager::Group, category: :x, matches: matches_x),
-        instance_double(SportsManager::Group, category: :y, matches: matches_y)
+        instance_double(SportsManager::Group, category: :x, matches: matches_x, initial_matches: matches_x),
+        instance_double(SportsManager::Group, category: :y, matches: matches_y, initial_matches: matches_y)
       ]
 
       tournament = described_class.new(settings: spy, groups: groups)
