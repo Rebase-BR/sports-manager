@@ -22,7 +22,7 @@ module SportsManager
 
     # Internal: Combine matches, byes and next round matches
     def all_matches
-      @all_matches ||= (initial_matches | future_matches)
+      @all_matches ||= (initial_matches | (matches_generated? ? [] : future_matches))
     end
 
     def matches(already_generated: false)
@@ -50,6 +50,14 @@ module SportsManager
       matches.select do |match|
         match.participants.include? participant
       end
+    end
+
+    private
+
+    # Verifies if the matches were passed already generated
+    # if depends_on is not empty, the match was passed already generated
+    def matches_generated?
+      initial_matches.any? { |match| !match.depends_on.empty? }
     end
   end
 end

@@ -342,7 +342,7 @@ RSpec.describe SportsManager::Group do
 
   describe '#first_round_matches' do
     it 'returns initial matches' do
-      matches = [instance_double(SportsManager::Match, round: 0, playable?: true)]
+      matches = [instance_double(SportsManager::Match, round: 0, playable?: true, depends_on: [])]
 
       group = described_class.new(category: spy, teams: spy, matches: matches)
 
@@ -353,7 +353,7 @@ RSpec.describe SportsManager::Group do
   describe '#find_matches' do
     context 'when round is zero' do
       it 'returns initial_matches' do
-        matches = [instance_double(SportsManager::Match, round: 0, playable?: true)]
+        matches = [instance_double(SportsManager::Match, round: 0, playable?: true, depends_on: [])]
 
         group = described_class.new(category: spy, teams: spy, matches: matches)
 
