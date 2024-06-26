@@ -244,99 +244,172 @@ RSpec.describe SportsManager::Group do
   end
 
   describe '#matches' do
-    it 'returns matches that are playable' do
-      category = :mixed_single
-      nil_team = SportsManager::NilTeam
-      match_class = SportsManager::Match
-      bye_class = SportsManager::ByeMatch
-      participant_class = SportsManager::Participant
+    context 'matches are not already generated' do
+      it 'returns matches that are playable' do
+        category = :mixed_single
+        nil_team = SportsManager::NilTeam
+        match_class = SportsManager::Match
+        bye_class = SportsManager::ByeMatch
+        participant_class = SportsManager::Participant
 
-      participants = [
-        SportsManager::Participant.new(id: 1, name: 'João'),
-        SportsManager::Participant.new(id: 34, name: 'Cleber'),
-        SportsManager::Participant.new(id: 5,  name: 'Carlos'),
-        SportsManager::Participant.new(id: 33, name: 'Erica')
-      ]
+        participants = [
+          SportsManager::Participant.new(id: 1, name: 'João'),
+          SportsManager::Participant.new(id: 34, name: 'Cleber'),
+          SportsManager::Participant.new(id: 5,  name: 'Carlos'),
+          SportsManager::Participant.new(id: 33, name: 'Erica')
+        ]
 
-      teams = participants.map do |participant|
-        SportsManager::SingleTeam.new(category: category, participants: [participant])
-      end
+        teams = participants.map do |participant|
+          SportsManager::SingleTeam.new(category: category, participants: [participant])
+        end
 
-      team1, team2, team3, team4 = teams
+        team1, team2, team3, team4 = teams
 
-      bye_team = SportsManager::NilTeam.new(category: category)
+        bye_team = SportsManager::NilTeam.new(category: category)
 
-      matches = [
-        SportsManager::Match.new(category: category, team1: team1, team2: team2, id: 1),
-        SportsManager::ByeMatch.new(category: category, team1: team3, team2: bye_team, id: 2),
-        SportsManager::ByeMatch.new(category: category, team1: team4, team2: bye_team, id: 3)
-      ]
+        matches = [
+          SportsManager::Match.new(category: category, team1: team1, team2: team2, id: 1),
+          SportsManager::ByeMatch.new(category: category, team1: team3, team2: bye_team, id: 2),
+          SportsManager::ByeMatch.new(category: category, team1: team4, team2: bye_team, id: 3)
+        ]
 
-      group = described_class.new(category: category, matches: matches, teams: teams)
+        group = described_class.new(category: category, matches: matches, teams: teams)
 
-      expect(group.matches.size).to eq 3
-      expect(group.matches).to include(
-        have_attributes(
-          class: match_class,
-          category: :mixed_single,
-          id: 1,
-          team1: team1,
-          team2: team2,
-          participants: [
-            have_attributes(class: participant_class, id: 1, name: 'João'),
-            have_attributes(class: participant_class, id: 34, name: 'Cleber')
-          ]
-        ),
-        have_attributes(
-          class: match_class,
-          category: :mixed_single,
-          id: 4,
-          team1: have_attributes(class: nil_team),
-          team2: have_attributes(class: nil_team),
-          depends_on: [
-            have_attributes(
-              class: match_class,
-              category: :mixed_single,
-              id: 1,
-              team1: team1,
-              team2: team2
-            ),
-            have_attributes(
-              class: bye_class,
-              category: :mixed_single,
-              id: 2,
-              team1: team3,
-              team2: bye_team,
-              participants: [
-                have_attributes(class: participant_class, id: 5, name: 'Carlos')
-              ]
-            )
-          ]
-        ),
-        have_attributes(
-          class: match_class,
-          category: :mixed_single,
-          team1: have_attributes(class: nil_team),
-          team2: have_attributes(class: nil_team),
-          id: 5,
-          depends_on: [
-            have_attributes(
-              class: bye_class,
-              category: :mixed_single,
-              id: 3,
-              participants: [
-                have_attributes(class: participant_class, id: 33, name: 'Erica')
-              ]
-            ),
-            have_attributes(
-              class: match_class,
-              category: :mixed_single,
-              id: 4
-            )
+        expect(group.matches.size).to eq 3
+        expect(group.matches).to include(
+          have_attributes(
+            class: match_class,
+            category: :mixed_single,
+            id: 1,
+            team1: team1,
+            team2: team2,
+            participants: [
+              have_attributes(class: participant_class, id: 1, name: 'João'),
+              have_attributes(class: participant_class, id: 34, name: 'Cleber')
+            ]
+          ),
+          have_attributes(
+            class: match_class,
+            category: :mixed_single,
+            id: 4,
+            team1: have_attributes(class: nil_team),
+            team2: have_attributes(class: nil_team),
+            depends_on: [
+              have_attributes(
+                class: match_class,
+                category: :mixed_single,
+                id: 1,
+                team1: team1,
+                team2: team2
+              ),
+              have_attributes(
+                class: bye_class,
+                category: :mixed_single,
+                id: 2,
+                team1: team3,
+                team2: bye_team,
+                participants: [
+                  have_attributes(class: participant_class, id: 5, name: 'Carlos')
+                ]
+              )
+            ]
+          ),
+          have_attributes(
+            class: match_class,
+            category: :mixed_single,
+            team1: have_attributes(class: nil_team),
+            team2: have_attributes(class: nil_team),
+            id: 5,
+            depends_on: [
+              have_attributes(
+                class: bye_class,
+                category: :mixed_single,
+                id: 3,
+                participants: [
+                  have_attributes(class: participant_class, id: 33, name: 'Erica')
+                ]
+              ),
+              have_attributes(
+                class: match_class,
+                category: :mixed_single,
+                id: 4
+              )
 
-          ]
+            ]
+          )
         )
-      )
+      end
+    end
+
+    context 'matches are already generated' do
+      it 'returns matches that are playable' do
+        category = :mixed_single
+        nil_team = SportsManager::NilTeam
+        match_class = SportsManager::Match
+        participant_class = SportsManager::Participant
+
+        participants = [
+          SportsManager::Participant.new(id: 1, name: 'João'),
+          SportsManager::Participant.new(id: 34, name: 'Cleber'),
+          SportsManager::Participant.new(id: 5,  name: 'Carlos'),
+          SportsManager::Participant.new(id: 33, name: 'Erica')
+        ]
+
+        teams = participants.map do |participant|
+          SportsManager::SingleTeam.new(category: category, participants: [participant])
+        end
+
+        team1, team2, team3, team4 = teams
+
+        match1 = SportsManager::Match.new(category: category, team1: team1, team2: team2, id: 1)
+        match2 = SportsManager::Match.new(category: category, team1: team3, team2: team4, id: 2)
+        match3 = SportsManager::Match.new(category: category, team1: nil_team, team2: nil_team, id: 3, depends_on: [match1, match2])
+
+        matches = [
+          match1,
+          match2,
+          match3
+        ]
+
+        group = described_class.new(category: category, matches: matches, teams: teams)
+
+        expect(group.matches.size).to eq 3
+        expect(group.matches).to match_array [
+          have_attributes(
+            class: match_class,
+            category: :mixed_single,
+            id: 1,
+            team1: team1,
+            team2: team2,
+            participants: [
+              have_attributes(class: participant_class, id: 1, name: 'João'),
+              have_attributes(class: participant_class, id: 34, name: 'Cleber')
+            ]
+          ),
+          have_attributes(
+            class: match_class,
+            category: :mixed_single,
+            id: 2,
+            team1: team3,
+            team2: team4,
+            participants: [
+              have_attributes(class: participant_class, id: 5, name: 'Carlos'),
+              have_attributes(class: participant_class, id: 33, name: 'Erica')
+            ]
+          ),
+          have_attributes(
+            class: match_class,
+            category: :mixed_single,
+            id: 3,
+            team1: nil_team,
+            team2: nil_team,
+            depends_on: [
+              match1,
+              match2
+            ]
+          ),
+        ]
+      end
     end
   end
 
