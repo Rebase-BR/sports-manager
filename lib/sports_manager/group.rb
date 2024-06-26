@@ -25,10 +25,7 @@ module SportsManager
       @all_matches ||= (initial_matches | (matches_generated? ? [] : future_matches))
     end
 
-    def matches(already_generated: false)
-      # If the matches were already generated, return only the playable initial matches
-      return initial_matches.select(&:playable?) if already_generated
-
+    def matches
       @matches ||= all_matches.select(&:playable?)
     end
 
