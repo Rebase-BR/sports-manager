@@ -25,16 +25,14 @@ module SportsManager
 
     def matches
       @matches ||= groups.each_with_object({}) do |group, category_matches|
-        category_matches[group.category] = group.matches(already_generated: matches_already_generated?)
+        category_matches[group.category] = group.matches(already_generated: matches_already_generated?(group))
       end
     end
 
     # Verifies if the matches were passed already generated
     # if depends_on is not empty, the match was passed already generated
-    def matches_already_generated?
-      groups&.any? do |group|
-        group.initial_matches.any? { |match| !match.depends_on.empty? }
-      end
+    def matches_already_generated?(group)
+      group.initial_matches.any? { |match| !match.depends_on.empty? }
     end
 
     def first_round_matches

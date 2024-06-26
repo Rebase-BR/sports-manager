@@ -38,7 +38,7 @@ module SportsManager
     end
 
     def matches_has_already_generated_matches_structure?
-      matches.first.is_a?(Hash)
+      matches&.first.is_a?(Hash)
     end
 
     def build_already_generated_matches(matches)
