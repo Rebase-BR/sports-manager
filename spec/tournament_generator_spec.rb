@@ -856,6 +856,46 @@ RSpec.describe SportsManager::TournamentGenerator do
       expect(result).to eq(generated_matches)
     end
 
+    it 'generate matches only for the categories that do not have matches' do
+      generator = described_class.new
+      generator.subscriptions = {
+        mixed_single: [
+          { id: 1, name: 'João' },    { id: 5, name: 'Carlos' },
+          { id: 10, name: 'Daniel' }, { id: 17, name: 'Laura' },
+          { id: 25, name: 'Joana' },  { id: 29, name: 'Carolina' },
+          { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
+        ],
+        womens_single: [
+          { id: 2, name: 'Maria' },    { id: 15, name: 'Bruna' },
+          { id: 16, name: 'Fernanda' }, { id: 18, name: 'Carla' }
+        ]
+      }
+      generator.matches = {
+        mixed_single: [[1, 34], [5, 33], [10, 29], [17, 25]]
+      }
+
+      generated_matches = {
+        womens_single: [[2, 18], [15, 16]]
+      }
+      allow(SportsManager::MatchesGenerator).to receive(:call).and_return(generated_matches)
+
+      result = generator.send(:matches_generator)
+
+      expect(SportsManager::MatchesGenerator).to have_received(:call).with(
+        womens_single: [
+          { id: 2, name: 'Maria' },
+          { id: 15, name: 'Bruna' },
+          { id: 16, name: 'Fernanda' },
+          { id: 18, name: 'Carla' }
+        ]
+      )
+
+      expect(result).to eq(
+        mixed_single: [[1, 34], [5, 33], [10, 29], [17, 25]],
+        womens_single: [[2, 18], [15, 16]]
+      )
+    end
+
     it 'returns provided matches when matches are present' do
       allow(SportsManager::MatchesGenerator).to receive(:call)
 

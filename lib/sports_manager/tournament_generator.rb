@@ -170,9 +170,18 @@ module SportsManager
     end
 
     def matches_generator
-      return matches if matches && !matches.empty?
+      if matches.empty?
+        return MatchesGenerator.call(subscriptions)
+      end
+      categories = subscriptions.keys
 
-      MatchesGenerator.call(subscriptions)
+      categories.each_with_object({}) do |category, matches_result|
+        if matches[category].nil?
+          matches_result[category] = MatchesGenerator.call({category => subscriptions[category]})[category]
+        else
+          matches_result[category] = matches[category]
+        end
+      end
     end
 
     def print_solution(tournament_solution)
