@@ -3,45 +3,42 @@
 module SportsManager
   # Public: Build matches objects from category, teams, and list of matches.
   class MatchBuilder
-    attr_reader :category, :matches, :teams, :participant_ids
-    attr_accessor :builded_matches
+    attr_reader :category, :matches, :teams, :builded_matches, :tournament_type
 
     INITIAL_ID = 1
     DEFAULT_MATCH_CLASS = Match
     BYE_MATCH_CLASS = ByeMatch
     NIL_TEAM = NilTeam
 
-    def initialize(category:, matches:, teams:)
+    def initialize(category:, matches:, teams:, tournament_type:, subscriptions:)
       @category = category
-      @matches = matches
+      @matches = matches_completer(matches, subscriptions)
       @builded_matches = []
-      @participant_ids = extract_participant_ids
+      @tournament_type = tournament_type
       @teams = teams
     end
 
     def build
-      if matches_has_already_generated_matches_structure?
-        build_already_generated_matches(matches)
-      else
-        build_matches(matches)
-      end
+      return build_already_generated_matches if generated_matches_structure?
+
+      build_matches
     end
 
     private
 
-    def extract_participant_ids
-      return matches unless matches_has_already_generated_matches_structure?
+    def participant_ids
+      return matches unless generated_matches_structure?
 
       matches.map do |match|
         match[:participants]
       end
     end
 
-    def matches_has_already_generated_matches_structure?
+    def generated_matches_structure?
       matches&.first.is_a?(Hash)
     end
 
-    def build_already_generated_matches(matches)
+    def build_already_generated_matches
       matches.each do |match|
         builded_matches << build_match(match_id: match[:id],
                                        participant_ids: match[:participants],
@@ -51,7 +48,12 @@ module SportsManager
       builded_matches
     end
 
-    def build_matches(_matches)
+    def build_matches
+      initial_matches = build_initial_matches
+      initial_matches | future_matches(initial_matches)
+    end
+
+    def build_initial_matches
       participant_ids.map.with_index(INITIAL_ID) do |participant_ids, match_id|
         build_match(match_id: match_id, participant_ids: participant_ids)
       end
@@ -89,6 +91,18 @@ module SportsManager
       return BYE_MATCH_CLASS if teams.any?(&:nil?) && participant_ids.size == 1
 
       DEFAULT_MATCH_CLASS
+    end
+
+    def future_matches(initial_matches)
+      Matches::NextRound
+        .new(category: category, base_matches: initial_matches, algorithm: tournament_type)
+        .next_matches
+    end
+
+    def matches_completer(_matches, subscriptions)
+      return MatchesGenerator.call({ category => subscriptions }).values.first if matches.nil? || matches.empty?
+
+      matches_arr
     end
   end
 end

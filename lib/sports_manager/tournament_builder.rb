@@ -11,7 +11,8 @@ module SportsManager
       courts: 1,
       match_time: 60,
       break_time: 10,
-      single_day_matches: false
+      single_day_matches: false,
+      tournament_type: Matches::Algorithms::SingleEliminationAlgorithm
     }.freeze
 
     def initialize
@@ -103,7 +104,8 @@ module SportsManager
         Group.for(
           category: category,
           subscriptions: category_subscriptions,
-          matches: category_matches
+          matches: category_matches,
+          tournament_type: configurations[:tournament_type]
         )
       end
     end

@@ -46,12 +46,13 @@ module SportsManager
   #     [[19, 20], [29, 30]]
   #   ]
   class GroupBuilder
-    attr_reader :category, :subscriptions, :matches
+    attr_reader :category, :subscriptions, :matches, :tournament_type
 
-    def initialize(category:, subscriptions:, matches:)
+    def initialize(category:, subscriptions:, matches:, tournament_type:)
       @category = category
       @subscriptions = subscriptions
       @matches = matches
+      @tournament_type = tournament_type
     end
 
     def build
@@ -61,7 +62,8 @@ module SportsManager
     private
 
     def builded_matches
-      MatchBuilder.new(category: category, matches: matches, teams: teams).build
+      MatchBuilder.new(category: category, matches: matches, teams: teams, tournament_type: tournament_type,
+                       subscriptions: subscriptions).build
     end
 
     def teams

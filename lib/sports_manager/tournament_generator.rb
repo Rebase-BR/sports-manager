@@ -24,7 +24,8 @@ module SportsManager
     attr_reader :format, :tournament, :variables, :domains,
                 :ordering, :filtering, :csp
 
-    attr_accessor :days, :subscriptions, :matches, :courts, :game_length, :rest_break, :single_day_matches
+    attr_accessor :days, :subscriptions, :matches, :courts, :game_length, :rest_break, :single_day_matches,
+                  :tournament_type
 
     def_delegators :tournament, :match_time, :timeslots
 
@@ -119,6 +120,11 @@ module SportsManager
       self
     end
 
+    def single_elimination_algorithm
+      @tournament_type = Matches::Algorithms::SingleEliminationAlgorithm
+      self
+    end
+
     def call
       setup
 
@@ -156,7 +162,6 @@ module SportsManager
     end
 
     def build_tournament
-      @matches = matches_generator
       TournamentBuilder
         .new
         .add_matches(matches)
@@ -166,22 +171,8 @@ module SportsManager
         .add_configuration(key: :match_time, value: game_length)
         .add_configuration(key: :break_time, value: rest_break)
         .add_configuration(key: :single_day_matches, value: single_day_matches)
+        .add_configuration(key: :tournament_type, value: tournament_type)
         .build
-    end
-
-    def matches_generator
-      if matches.empty?
-        return MatchesGenerator.call(subscriptions)
-      end
-      categories = subscriptions.keys
-
-      categories.each_with_object({}) do |category, matches_result|
-        if matches[category].nil?
-          matches_result[category] = MatchesGenerator.call({category => subscriptions[category]})[category]
-        else
-          matches_result[category] = matches[category]
-        end
-      end
     end
 
     def print_solution(tournament_solution)

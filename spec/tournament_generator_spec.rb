@@ -866,7 +866,7 @@ RSpec.describe SportsManager::TournamentGenerator do
           { id: 33, name: 'Erica' },  { id: 34, name: 'Cleber' }
         ],
         womens_single: [
-          { id: 2, name: 'Maria' },    { id: 15, name: 'Bruna' },
+          { id: 2, name: 'Maria' }, { id: 15, name: 'Bruna' },
           { id: 16, name: 'Fernanda' }, { id: 18, name: 'Carla' }
         ]
       }

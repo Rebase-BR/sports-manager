@@ -12,8 +12,10 @@ RSpec.describe SportsManager::GroupBuilder do
       match_class = SportsManager::Match
       team_class = SportsManager::SingleTeam
       participant_class = SportsManager::Participant
+      tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
 
-      group = described_class.new(category: category, subscriptions: subscriptions, matches: matches).build
+      group = described_class.new(category: category, subscriptions: subscriptions, matches: matches,
+                                  tournament_type: tournament_type).build
 
       expect(group.category).to eq :mixed_single
       expect(group.participants).to match_array [
@@ -36,7 +38,7 @@ RSpec.describe SportsManager::GroupBuilder do
         )
       ]
 
-      expect(group.initial_matches).to match_array [
+      expect(group.all_matches).to match_array [
         have_attributes(
           class: match_class,
           category: category,
@@ -76,8 +78,10 @@ RSpec.describe SportsManager::GroupBuilder do
         match_class = SportsManager::Match
         team_class = SportsManager::SingleTeam
         participant_class = SportsManager::Participant
+        tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
 
-        group = described_class.new(category: category, subscriptions: subscriptions, matches: matches).build
+        allow(SportsManager::Matches::NextRound).to receive(:new).and_return(double(next_matches: []))
+        group = described_class.new(category: category, subscriptions: subscriptions, matches: matches, tournament_type: tournament_type).build
 
         expect(group.category).to eq :mixed_single
         expect(group.participants).to match_array [
@@ -114,7 +118,7 @@ RSpec.describe SportsManager::GroupBuilder do
           )
         ]
 
-        expect(group.initial_matches).to match_array [
+        expect(group.all_matches).to match_array [
           have_attributes(
             class: match_class,
             category: category,
@@ -177,8 +181,10 @@ RSpec.describe SportsManager::GroupBuilder do
         match_class = SportsManager::Match
         team_class = SportsManager::DoubleTeam
         participant_class = SportsManager::Participant
+        tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
 
-        group = described_class.new(category: category, subscriptions: subscriptions, matches: matches).build
+        allow(SportsManager::Matches::NextRound).to receive(:new).and_return(double(next_matches: []))
+        group = described_class.new(category: category, subscriptions: subscriptions, matches: matches, tournament_type: tournament_type).build
 
         expect(group.category).to eq :mixed_double
         expect(group.participants).to match_array [
@@ -205,7 +211,7 @@ RSpec.describe SportsManager::GroupBuilder do
           )
         ]
 
-        expect(group.initial_matches).to match_array [
+        expect(group.all_matches).to match_array [
           have_attributes(
             class: match_class,
             category: category,

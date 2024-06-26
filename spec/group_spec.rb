@@ -363,7 +363,8 @@ RSpec.describe SportsManager::Group do
 
         match1 = SportsManager::Match.new(category: category, team1: team1, team2: team2, id: 1)
         match2 = SportsManager::Match.new(category: category, team1: team3, team2: team4, id: 2)
-        match3 = SportsManager::Match.new(category: category, team1: nil_team, team2: nil_team, id: 3, depends_on: [match1, match2])
+        match3 = SportsManager::Match.new(category: category, team1: nil_team, team2: nil_team, id: 3,
+                                          depends_on: [match1, match2])
 
         matches = [
           match1,
@@ -407,7 +408,7 @@ RSpec.describe SportsManager::Group do
               match1,
               match2
             ]
-          ),
+          )
         ]
       end
     end
