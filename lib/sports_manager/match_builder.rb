@@ -49,12 +49,11 @@ module SportsManager
     end
 
     def build_matches
-      initial_matches = build_initial_matches
-      initial_matches | future_matches(initial_matches)
+      initial_matches | future_matches
     end
 
-    def build_initial_matches
-      participant_ids.map.with_index(INITIAL_ID) do |participant_ids, match_id|
+    def initial_matches
+      @initial_matches ||= participant_ids.map.with_index(INITIAL_ID) do |participant_ids, match_id|
         build_match(match_id: match_id, participant_ids: participant_ids)
       end
     end
@@ -93,7 +92,7 @@ module SportsManager
       DEFAULT_MATCH_CLASS
     end
 
-    def future_matches(initial_matches)
+    def future_matches
       Matches::NextRound
         .new(category: category, base_matches: initial_matches, algorithm: tournament_type)
         .next_matches
