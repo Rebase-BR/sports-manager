@@ -72,6 +72,7 @@ solution = SportsManager::TournamentGenerator.new(format: :cli)
   .add_rest_break(rest_break)
   .enable_single_day_matches(single_day_matches)
   .add_subscriptions(subscriptions)
+  .single_elimination_algorithm
   .add_matches(matches)
 ```
 
@@ -137,6 +138,7 @@ params = {
 - `add_matches(matches)`: Adds the first matchups for each category.
 - `add_match(category, match)`: Adds a single match to a category.
 - `add_matches_per_category(category, matches_per_category)`: Adds the first matchups per category.
+- `single_elimination_algorithm`: Sets the single elimination algorithm(this option is already default).
 
 
 ### Running Example Tournaments
@@ -206,6 +208,7 @@ matches = {
   .add_rest_break(rest_break)
   .enable_single_day_matches(single_day_matches)
   .add_subscriptions(subscriptions)
+  .single_elimination_algorithm
   .add_matches(matches)
   .call
 ```
@@ -277,6 +280,7 @@ matches = {
   .add_rest_break(rest_break)
   .enable_single_day_matches(single_day_matches)
   .add_subscriptions(subscriptions)
+  .single_elimination_algorithm
   .add_matches(matches)
   .call
 ```

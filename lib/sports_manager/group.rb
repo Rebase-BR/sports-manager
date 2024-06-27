@@ -33,12 +33,6 @@ module SportsManager
       matches.select { |match| match.round == round_number }
     end
 
-    def future_matches
-      Matches::NextRound
-        .new(category: category, base_matches: initial_matches)
-        .next_matches
-    end
-
     def find_participant_matches(participant)
       matches.select do |match|
         match.participants.include? participant

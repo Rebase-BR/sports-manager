@@ -17,16 +17,18 @@ RSpec.describe SportsManager::Group do
         { id: 33, name: 'Erica' },
         { id: 34, name: 'Cleber' }
       ]
+      tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
 
       allow(SportsManager::GroupBuilder)
         .to receive(:new)
         .and_call_original
 
-      described_class.for(category: category, subscriptions: subscriptions, matches: matches)
+      described_class.for(category: category, subscriptions: subscriptions, matches: matches,
+                          tournament_type: tournament_type)
 
       expect(SportsManager::GroupBuilder)
         .to have_received(:new)
-        .with(category: category, subscriptions: subscriptions, matches: matches)
+        .with(category: category, subscriptions: subscriptions, matches: matches, tournament_type: tournament_type)
     end
   end
 
@@ -75,34 +77,39 @@ RSpec.describe SportsManager::Group do
   end
 
   describe '#all_matches' do
-    it 'returns the initial matches and next rounds matches' do
+    it 'returns all matches' do
       category = :mixed_single
-      nil_team = SportsManager::NilTeam
       match_class = SportsManager::Match
       participant_class = SportsManager::Participant
+
       participants = [
         SportsManager::Participant.new(id: 1, name: 'João'),
         SportsManager::Participant.new(id: 34, name: 'Cleber'),
         SportsManager::Participant.new(id: 5,  name: 'Carlos'),
         SportsManager::Participant.new(id: 33, name: 'Erica')
       ]
+
       teams = participants.map do |participant|
-        SportsManager::SingleTeam.new(
-          category: category,
-          participants: [participant]
-        )
+        SportsManager::SingleTeam.new(category: category, participants: [participant])
       end
-      matches = teams.each_slice(2).map do |team1, team2|
-        SportsManager::Match.new(category: category, team1: team1, team2: team2)
-      end
+
+      team1, team2, team3, team4 = teams
+
+      matches = [
+        SportsManager::Match.new(category: category, team1: team1, team2: team2, id: 1),
+        SportsManager::Match.new(category: category, team1: team3, team2: team4, id: 2)
+      ]
 
       group = described_class.new(category: category, matches: matches, teams: teams)
 
-      expect(group.all_matches.size).to eq 3
+      expect(group.all_matches.size).to eq 2
       expect(group.all_matches).to match_array [
         have_attributes(
           class: match_class,
-          category: :mixed_single,
+          category: category,
+          id: 1,
+          team1: team1,
+          team2: team2,
           participants: [
             have_attributes(class: participant_class, id: 1, name: 'João'),
             have_attributes(class: participant_class, id: 34, name: 'Cleber')
@@ -110,44 +117,22 @@ RSpec.describe SportsManager::Group do
         ),
         have_attributes(
           class: match_class,
-          category: :mixed_single,
+          category: category,
+          id: 2,
+          team1: team3,
+          team2: team4,
           participants: [
             have_attributes(class: participant_class, id: 5, name: 'Carlos'),
             have_attributes(class: participant_class, id: 33, name: 'Erica')
-          ]
-        ),
-        have_attributes(
-          class: match_class,
-          category: :mixed_single,
-          team1: have_attributes(class: nil_team),
-          team2: have_attributes(class: nil_team),
-          depends_on: [
-            have_attributes(
-              class: match_class,
-              category: :mixed_single,
-              participants: [
-                have_attributes(class: participant_class, id: 1, name: 'João'),
-                have_attributes(class: participant_class, id: 34, name: 'Cleber')
-              ]
-            ),
-            have_attributes(
-              class: match_class,
-              category: :mixed_single,
-              participants: [
-                have_attributes(class: participant_class, id: 5, name: 'Carlos'),
-                have_attributes(class: participant_class, id: 33, name: 'Erica')
-              ]
-            )
           ]
         )
       ]
     end
 
     context 'when is double' do
-      it 'returns the initial matches and next rounds matches' do
+      it 'returns all matches' do
         category = :womens_double
 
-        nil_team = SportsManager::NilTeam
         match_class = SportsManager::Match
         participant_class = SportsManager::Participant
 
@@ -180,7 +165,7 @@ RSpec.describe SportsManager::Group do
 
         group = described_class.new(category: :womens_double, matches: matches, teams: teams)
 
-        expect(group.all_matches.size).to eq 3
+        expect(group.all_matches.size).to eq 2
         expect(group.all_matches).to match_array [
           have_attributes(
             class: match_class,
@@ -221,21 +206,11 @@ RSpec.describe SportsManager::Group do
                 have_attributes(class: participant_class, id: 22)
               ]
             ),
-
             participants: [
               have_attributes(class: participant_class, id: 19),
               have_attributes(class: participant_class, id: 20),
               have_attributes(class: participant_class, id: 21),
               have_attributes(class: participant_class, id: 22)
-            ]
-          ),
-          have_attributes(
-            class: match_class,
-            team1: have_attributes(class: nil_team),
-            team2: have_attributes(class: nil_team),
-            depends_on: [
-              have_attributes(class: match_class, id: 1),
-              have_attributes(class: match_class, id: 2)
             ]
           )
         ]
@@ -244,173 +219,62 @@ RSpec.describe SportsManager::Group do
   end
 
   describe '#matches' do
-    context 'matches are not already generated' do
-      it 'returns matches that are playable' do
-        category = :mixed_single
-        nil_team = SportsManager::NilTeam
-        match_class = SportsManager::Match
-        bye_class = SportsManager::ByeMatch
-        participant_class = SportsManager::Participant
+    it 'returns matches that are playable' do
+      category = :mixed_single
+      nil_team = SportsManager::NilTeam
+      match_class = SportsManager::Match
+      participant_class = SportsManager::Participant
 
-        participants = [
-          SportsManager::Participant.new(id: 1, name: 'João'),
-          SportsManager::Participant.new(id: 34, name: 'Cleber'),
-          SportsManager::Participant.new(id: 5,  name: 'Carlos'),
-          SportsManager::Participant.new(id: 33, name: 'Erica')
-        ]
+      participants = [
+        SportsManager::Participant.new(id: 1, name: 'João'),
+        SportsManager::Participant.new(id: 34, name: 'Cleber'),
+        SportsManager::Participant.new(id: 5,  name: 'Carlos'),
+        SportsManager::Participant.new(id: 33, name: 'Erica')
+      ]
 
-        teams = participants.map do |participant|
-          SportsManager::SingleTeam.new(category: category, participants: [participant])
-        end
+      teams = participants.map do |participant|
+        SportsManager::SingleTeam.new(category: category, participants: [participant])
+      end
 
-        team1, team2, team3, team4 = teams
+      team1, team2, team3, team4 = teams
 
-        bye_team = SportsManager::NilTeam.new(category: category)
+      match1 = SportsManager::Match.new(category: category, team1: team1, team2: team2, id: 1)
+      match2 = SportsManager::Match.new(category: category, team1: team3, team2: team4, id: 2)
+      match3 = SportsManager::ByeMatch.new(category: category, team1: nil_team, team2: nil_team, id: 3)
 
-        matches = [
-          SportsManager::Match.new(category: category, team1: team1, team2: team2, id: 1),
-          SportsManager::ByeMatch.new(category: category, team1: team3, team2: bye_team, id: 2),
-          SportsManager::ByeMatch.new(category: category, team1: team4, team2: bye_team, id: 3)
-        ]
+      matches = [
+        match1,
+        match2,
+        match3
+      ]
 
-        group = described_class.new(category: category, matches: matches, teams: teams)
+      group = described_class.new(category: category, matches: matches, teams: teams)
 
-        expect(group.matches.size).to eq 3
-        expect(group.matches).to include(
-          have_attributes(
-            class: match_class,
-            category: :mixed_single,
-            id: 1,
-            team1: team1,
-            team2: team2,
-            participants: [
-              have_attributes(class: participant_class, id: 1, name: 'João'),
-              have_attributes(class: participant_class, id: 34, name: 'Cleber')
-            ]
-          ),
-          have_attributes(
-            class: match_class,
-            category: :mixed_single,
-            id: 4,
-            team1: have_attributes(class: nil_team),
-            team2: have_attributes(class: nil_team),
-            depends_on: [
-              have_attributes(
-                class: match_class,
-                category: :mixed_single,
-                id: 1,
-                team1: team1,
-                team2: team2
-              ),
-              have_attributes(
-                class: bye_class,
-                category: :mixed_single,
-                id: 2,
-                team1: team3,
-                team2: bye_team,
-                participants: [
-                  have_attributes(class: participant_class, id: 5, name: 'Carlos')
-                ]
-              )
-            ]
-          ),
-          have_attributes(
-            class: match_class,
-            category: :mixed_single,
-            team1: have_attributes(class: nil_team),
-            team2: have_attributes(class: nil_team),
-            id: 5,
-            depends_on: [
-              have_attributes(
-                class: bye_class,
-                category: :mixed_single,
-                id: 3,
-                participants: [
-                  have_attributes(class: participant_class, id: 33, name: 'Erica')
-                ]
-              ),
-              have_attributes(
-                class: match_class,
-                category: :mixed_single,
-                id: 4
-              )
-
-            ]
-          )
+      expect(group.matches.size).to eq 2
+      expect(group.matches).to match_array [
+        have_attributes(
+          class: match_class,
+          category: :mixed_single,
+          id: 1,
+          team1: team1,
+          team2: team2,
+          participants: [
+            have_attributes(class: participant_class, id: 1, name: 'João'),
+            have_attributes(class: participant_class, id: 34, name: 'Cleber')
+          ]
+        ),
+        have_attributes(
+          class: match_class,
+          category: :mixed_single,
+          id: 2,
+          team1: team3,
+          team2: team4,
+          participants: [
+            have_attributes(class: participant_class, id: 5, name: 'Carlos'),
+            have_attributes(class: participant_class, id: 33, name: 'Erica')
+          ]
         )
-      end
-    end
-
-    context 'matches are already generated' do
-      it 'returns matches that are playable' do
-        category = :mixed_single
-        nil_team = SportsManager::NilTeam
-        match_class = SportsManager::Match
-        participant_class = SportsManager::Participant
-
-        participants = [
-          SportsManager::Participant.new(id: 1, name: 'João'),
-          SportsManager::Participant.new(id: 34, name: 'Cleber'),
-          SportsManager::Participant.new(id: 5,  name: 'Carlos'),
-          SportsManager::Participant.new(id: 33, name: 'Erica')
-        ]
-
-        teams = participants.map do |participant|
-          SportsManager::SingleTeam.new(category: category, participants: [participant])
-        end
-
-        team1, team2, team3, team4 = teams
-
-        match1 = SportsManager::Match.new(category: category, team1: team1, team2: team2, id: 1)
-        match2 = SportsManager::Match.new(category: category, team1: team3, team2: team4, id: 2)
-        match3 = SportsManager::Match.new(category: category, team1: nil_team, team2: nil_team, id: 3,
-                                          depends_on: [match1, match2])
-
-        matches = [
-          match1,
-          match2,
-          match3
-        ]
-
-        group = described_class.new(category: category, matches: matches, teams: teams)
-
-        expect(group.matches.size).to eq 3
-        expect(group.matches).to match_array [
-          have_attributes(
-            class: match_class,
-            category: :mixed_single,
-            id: 1,
-            team1: team1,
-            team2: team2,
-            participants: [
-              have_attributes(class: participant_class, id: 1, name: 'João'),
-              have_attributes(class: participant_class, id: 34, name: 'Cleber')
-            ]
-          ),
-          have_attributes(
-            class: match_class,
-            category: :mixed_single,
-            id: 2,
-            team1: team3,
-            team2: team4,
-            participants: [
-              have_attributes(class: participant_class, id: 5, name: 'Carlos'),
-              have_attributes(class: participant_class, id: 33, name: 'Erica')
-            ]
-          ),
-          have_attributes(
-            class: match_class,
-            category: :mixed_single,
-            id: 3,
-            team1: nil_team,
-            team2: nil_team,
-            depends_on: [
-              match1,
-              match2
-            ]
-          )
-        ]
-      end
+      ]
     end
   end
 
@@ -444,53 +308,9 @@ RSpec.describe SportsManager::Group do
 
       group = described_class.new(category: spy, teams: spy, matches: matches)
 
-      allow(group).to receive(:future_matches).and_return([])
-
       expect(group.find_matches(1)).to eq [match_round2]
       expect(group.find_matches(2)).to eq [match_round3]
       expect(group.find_matches(3)).to be_empty
-    end
-  end
-
-  describe '#future_matches' do
-    it 'returns the following matches' do
-      category = :mixed_single
-      match1 = instance_double(SportsManager::Match, round: 0, depends_on: [])
-      match2 = instance_double(SportsManager::Match, round: 0, depends_on: [])
-      matches = [match1, match2]
-      nil_team = SportsManager::NilTeam.new(category: category)
-
-      group = described_class.new(category: category, teams: spy, matches: matches)
-
-      expect(group.future_matches).to match_array [
-        have_attributes(
-          class: SportsManager::Match,
-          team1: nil_team,
-          team2: nil_team,
-          depends_on: [match1, match2]
-        )
-      ]
-    end
-
-    it 'returns the following matches' do
-      category = :mixed_single
-      team1 = team2 = SportsManager::NilTeam.new(category: category)
-      params = { category: category, team1: team1, team2: team2 }
-
-      match1 = instance_double(SportsManager::Match, id: 1, depends_on: [], round: 0)
-      match2 = instance_double(SportsManager::Match, id: 2, depends_on: [], round: 0)
-      match3 = instance_double(SportsManager::Match, id: 3, depends_on: [], round: 0)
-      match4 = instance_double(SportsManager::Match, id: 4, depends_on: [], round: 0)
-
-      match5 = SportsManager::Match.new(**params, round: 1, id: 5, depends_on: [match1, match2])
-      match6 = SportsManager::Match.new(**params, round: 1, id: 6, depends_on: [match3, match4])
-      match7 = SportsManager::Match.new(**params, round: 2, id: 7, depends_on: [match5, match6])
-
-      matches = [match1, match2, match3, match4]
-
-      group = described_class.new(category: category, teams: spy, matches: matches)
-
-      expect(group.future_matches).to eq [match5, match6, match7]
     end
   end
 

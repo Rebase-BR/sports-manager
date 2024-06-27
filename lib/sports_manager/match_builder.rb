@@ -99,10 +99,10 @@ module SportsManager
         .next_matches
     end
 
-    def matches_completer(_matches, subscriptions)
+    def matches_completer(matches, subscriptions)
       return MatchesGenerator.call({ category => subscriptions }).values.first if matches.nil? || matches.empty?
 
-      matches_arr
+      matches
     end
   end
 end

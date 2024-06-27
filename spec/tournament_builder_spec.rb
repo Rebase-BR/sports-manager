@@ -104,7 +104,7 @@ RSpec.describe SportsManager::TournamentBuilder do
                   )
                 )
               ),
-              initial_matches: a_collection_including(
+              all_matches: a_collection_including(
                 have_attributes(
                   class: match_class,
                   team1: have_attributes(
@@ -204,7 +204,7 @@ RSpec.describe SportsManager::TournamentBuilder do
                     )
                   )
                 ),
-                initial_matches: a_collection_including(
+                all_matches: a_collection_including(
                   have_attributes(
                     class: match_class,
                     team1: have_attributes(

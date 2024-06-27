@@ -161,8 +161,8 @@ RSpec.describe SportsManager::Tournament do
       matches_x = [instance_double(SportsManager::Match, depends_on: [])]
       matches_y = [instance_double(SportsManager::Match, depends_on: [])]
       groups = [
-        instance_double(SportsManager::Group, category: :x, matches: matches_x, initial_matches: matches_x),
-        instance_double(SportsManager::Group, category: :y, matches: matches_y, initial_matches: matches_y)
+        instance_double(SportsManager::Group, category: :x, matches: matches_x, all_matches: matches_x),
+        instance_double(SportsManager::Group, category: :y, matches: matches_y, all_matches: matches_y)
       ]
 
       tournament = described_class.new(settings: spy, groups: groups)
@@ -183,8 +183,8 @@ RSpec.describe SportsManager::Tournament do
         instance_double(SportsManager::Match, depends_on: [])
       ]
       groups = [
-        instance_double(SportsManager::Group, category: :x, matches: matches_x, initial_matches: matches_x),
-        instance_double(SportsManager::Group, category: :y, matches: matches_y, initial_matches: matches_y)
+        instance_double(SportsManager::Group, category: :x, matches: matches_x, all_matches: matches_x),
+        instance_double(SportsManager::Group, category: :y, matches: matches_y, all_matches: matches_y)
       ]
 
       tournament = described_class.new(settings: spy, groups: groups)
