@@ -41,7 +41,7 @@ module SportsManager
     def build_already_generated_matches
       matches.each do |match|
         builded_matches << build_match(match_id: match[:id],
-                                       participant_ids: match[:participants],
+                                       participant_ids: match[:participants] || [],
                                        round: match[:round] || 0,
                                        depends_on: match[:depends_on] || [])
       end
