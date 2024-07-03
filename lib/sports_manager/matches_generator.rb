@@ -2,55 +2,32 @@
 
 module SportsManager
   class MatchesGenerator
-    def self.call(subscriptions)
-      new(subscriptions).call
+    def self.call(subscriptions_ids)
+      new(subscriptions_ids).call
     end
 
-    def initialize(subscriptions)
-      @subscriptions = subscriptions
+    def initialize(subscriptions_ids)
+      @subscriptions_ids = subscriptions_ids
     end
 
     def call
-      @subscriptions.transform_values do |subscriptions|
-        generate_matches(subscriptions)
-      end
+      generate_matches(@subscriptions_ids)
     end
 
     private
 
     attr_reader :subscriptions
 
-    def generate_matches(subscriptions)
-      list = subscriptions.dup
-      size = subscriptions.size
+    def generate_matches(subscriptions_ids)
+      list = subscriptions_ids.dup
+      size = subscriptions_ids.size
+
       number_of_matches = size.even? ? (size / 2) : ((size / 2) + 1)
 
-      match_subscriptions = number_of_matches.times.map do
+      number_of_matches.times.map do
         match = [list.shift, list.pop].compact
         match unless match.empty?
       end.compact
-
-      as_ids(match_subscriptions)
-    end
-
-    def as_ids(match_subscriptions)
-      if double?(match_subscriptions.first)
-        match_subscriptions.map { |match| double_fetch_ids(match) }
-      else
-        match_subscriptions.map { |match| single_fetch_ids(match) }
-      end
-    end
-
-    def single_fetch_ids(match)
-      match.map { |team| team[:id] }
-    end
-
-    def double_fetch_ids(match)
-      match.map { |team| team.map { |player| player[:id] } }
-    end
-
-    def double?(match)
-      match.all? { |team| team.is_a?(Array) }
     end
   end
 end

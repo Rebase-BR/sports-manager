@@ -23,15 +23,9 @@ RSpec.describe SportsManager::MatchBuilder do
 
         teams = [team1, team2, team3, team4]
         tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-        subscriptions = [
-          { id: 1, name: 'João' },
-          { id: 2, name: 'Marcelo' },
-          { id: 3, name: 'José' },
-          { id: 4, name: 'Pedro' }
-        ]
 
         matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                             tournament_type: tournament_type, subscriptions: subscriptions).build
+                                             tournament_type: tournament_type).build
 
         expect(matches_result.first.id).to eq 23
         expect(matches_result.last.id).to eq 1024
@@ -55,15 +49,9 @@ RSpec.describe SportsManager::MatchBuilder do
 
         teams = [team1, team2, team3, team4]
         tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-        subscriptions = [
-          { id: 1, name: 'João' },
-          { id: 2, name: 'Marcelo' },
-          { id: 3, name: 'José' },
-          { id: 4, name: 'Pedro' }
-        ]
 
         matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                             tournament_type: tournament_type, subscriptions: subscriptions).build
+                                             tournament_type: tournament_type).build
 
         expect(matches_result.first.round).to eq 1
         expect(matches_result.last.round).to eq 2
@@ -89,15 +77,9 @@ RSpec.describe SportsManager::MatchBuilder do
 
         teams = [team1, team2, team3, team4]
         tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-        subscriptions = [
-          { id: 1, name: 'João' },
-          { id: 2, name: 'Marcelo' },
-          { id: 3, name: 'José' },
-          { id: 4, name: 'Pedro' }
-        ]
 
         matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                             tournament_type: tournament_type, subscriptions: subscriptions).build
+                                             tournament_type: tournament_type).build
 
         expect(matches_result[2].depends_on).to match_array [matches_result[0], matches_result[1]]
         expect(matches_result[3].depends_on).to match_array [matches_result[2]]
@@ -135,20 +117,10 @@ RSpec.describe SportsManager::MatchBuilder do
 
           teams = [team1, team2, team3, team4, team5, team6, team7, team8]
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            { id: 1, name: 'João' },
-            { id: 2, name: 'Marcelo' },
-            { id: 33, name: 'Erica' },
-            { id: 34, name: 'Cleber' },
-            { id: 35, name: 'Jéssica' },
-            { id: 36, name: 'Daniela' },
-            { id: 37, name: 'Reyna' },
-            { id: 38, name: 'Larissa' }
-          ]
           nil_team = SportsManager::NilTeam.new(category: category)
 
           matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                               tournament_type: tournament_type, subscriptions: subscriptions).build
+                                               tournament_type: tournament_type).build
 
           expect(matches_result).to match_array [
             have_attributes(
@@ -250,20 +222,10 @@ RSpec.describe SportsManager::MatchBuilder do
 
           teams = [team1, team2, team3, team4, team5, team6, team7, team8]
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            [{ id: 17, name: 'Laura' }, { id: 18, name: 'Karina' }],
-            [{ id: 19, name: 'Manoela' }, { id: 20, name: 'Alessandra' }],
-            [{ id: 31, name: 'Reyna' }, { id: 32, name: 'Larissa' }],
-            [{ id: 33, name: 'Jéssica' }, { id: 34, name: 'Daniela' }],
-            [{ id: 35, name: 'Amanda' }, { id: 36, name: 'Roxele' }],
-            [{ id: 37, name: 'Rozangela' }, { id: 38, name: 'Rozilda' }],
-            [{ id: 39, name: 'Rozilene' }, { id: 40, name: 'Rozimeire' }],
-            [{ id: 41, name: 'Elisangela' }, { id: 42, name: 'Elisabete' }]
-          ]
           nil_team = SportsManager::NilTeam.new(category: category)
 
           matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                               tournament_type: tournament_type, subscriptions: subscriptions).build
+                                               tournament_type: tournament_type).build
 
           expect(matches_result).to match_array [
             have_attributes(
@@ -343,14 +305,9 @@ RSpec.describe SportsManager::MatchBuilder do
           team3 = SportsManager::SingleTeam.new(participants: [participant3], category: category)
           teams = [team1, team2, team3]
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            { id: 1, name: 'João' },
-            { id: 2, name: 'Marcelo' },
-            { id: 3, name: 'José' }
-          ]
           nil_team = SportsManager::NilTeam.new(category: category)
           matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                               tournament_type: tournament_type, subscriptions: subscriptions).build
+                                               tournament_type: tournament_type).build
 
           expect(matches_result).to match_array [
             have_attributes(
@@ -410,17 +367,8 @@ RSpec.describe SportsManager::MatchBuilder do
 
           teams = [team1, team2, team3, team4, team5, team6]
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            { id: 1, name: 'João' },
-            { id: 2, name: 'Marcelo' },
-            { id: 3, name: 'José' },
-            { id: 4, name: 'Pedro' },
-            { id: 5, name: 'Carlos' },
-            { id: 6, name: 'Leandro' }
-          ]
-
           matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                               tournament_type: tournament_type, subscriptions: subscriptions).build
+                                               tournament_type: tournament_type).build
 
           expect(matches_result).to match_array [
             have_attributes(
@@ -493,13 +441,8 @@ RSpec.describe SportsManager::MatchBuilder do
         team2 = SportsManager::SingleTeam.new(participants: [participant2], category: category)
         teams = [team1, team2]
         tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-        subscriptions = [
-          { id: 1, name: 'João' },
-          { id: 2, name: 'Marcelo' }
-        ]
-
         matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                             tournament_type: tournament_type, subscriptions: subscriptions).build
+                                             tournament_type: tournament_type).build
 
         expect(matches_result).to match_array(
           have_attributes(
@@ -527,16 +470,10 @@ RSpec.describe SportsManager::MatchBuilder do
             team4 = SportsManager::SingleTeam.new(participants: [participant4], category: category)
             teams = [team1, team2, team3, team4]
             tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-            subscriptions = [
-              { id: 1, name: 'João' },
-              { id: 2, name: 'Marcelo' },
-              { id: 3, name: 'José' },
-              { id: 4, name: 'Pedro' }
-            ]
             nil_team = SportsManager::NilTeam.new(category: category)
 
             matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                                 tournament_type: tournament_type, subscriptions: subscriptions).build
+                                                 tournament_type: tournament_type).build
 
             expect(matches_result).to match_array [
               have_attributes(
@@ -584,16 +521,10 @@ RSpec.describe SportsManager::MatchBuilder do
             team4 = SportsManager::DoubleTeam.new(participants: [participant7, participant8], category: category)
             teams = [team1, team2, team3, team4]
             tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-            subscriptions = [
-              [{ id: 1, name: 'João' }, { id: 2, name: 'Marcelo' }],
-              [{ id: 3, name: 'José' }, { id: 4, name: 'Pedro' }],
-              [{ id: 5, name: 'Carlos' }, { id: 6, name: 'Leandro' }],
-              [{ id: 7, name: 'Ricardo' }, { id: 8, name: 'Rafael' }]
-            ]
             nil_team = SportsManager::NilTeam.new(category: category)
 
             matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                                 tournament_type: tournament_type, subscriptions: subscriptions).build
+                                                 tournament_type: tournament_type).build
 
             expect(matches_result).to match_array [
               have_attributes(
@@ -649,19 +580,8 @@ RSpec.describe SportsManager::MatchBuilder do
           nil_team = SportsManager::NilTeam.new(category: category)
           teams = [team1, team2, team3, team4, team5, team6, team7, team8]
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            { id: 1, name: 'João' },
-            { id: 2, name: 'Marcelo' },
-            { id: 33, name: 'Erica' },
-            { id: 34, name: 'Cleber' },
-            { id: 35, name: 'Jéssica' },
-            { id: 36, name: 'Daniela' },
-            { id: 37, name: 'Reyna' },
-            { id: 38, name: 'Larissa' }
-          ]
-
           matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                               tournament_type: tournament_type, subscriptions: subscriptions).build
+                                               tournament_type: tournament_type).build
 
           expect(matches_result).to match_array [
             have_attributes(
@@ -761,19 +681,8 @@ RSpec.describe SportsManager::MatchBuilder do
           nil_team = SportsManager::NilTeam.new(category: category)
 
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            [{ id: 17, name: 'Laura' }, { id: 18, name: 'Karina' }],
-            [{ id: 19, name: 'Manoela' }, { id: 20, name: 'Alessandra' }],
-            [{ id: 31, name: 'Reyna' }, { id: 32, name: 'Larissa' }],
-            [{ id: 33, name: 'Jéssica' }, { id: 34, name: 'Daniela' }],
-            [{ id: 35, name: 'Amanda' }, { id: 36, name: 'Roxele' }],
-            [{ id: 37, name: 'Rozangela' }, { id: 38, name: 'Rozilda' }],
-            [{ id: 39, name: 'Rozilene' }, { id: 40, name: 'Rozimeire' }],
-            [{ id: 41, name: 'Elisangela' }, { id: 42, name: 'Elisabete' }]
-          ]
-
           matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                               tournament_type: tournament_type, subscriptions: subscriptions).build
+                                               tournament_type: tournament_type).build
 
           expect(matches_result).to match_array [
             have_attributes(
@@ -851,14 +760,8 @@ RSpec.describe SportsManager::MatchBuilder do
           nil_team = SportsManager::NilTeam.new(category: category)
 
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            { id: 1, name: 'João' },
-            { id: 2, name: 'Marcelo' },
-            { id: 3, name: 'José' }
-          ]
-
           matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                               tournament_type: tournament_type, subscriptions: subscriptions).build
+                                               tournament_type: tournament_type).build
 
           expect(matches_result).to match_array [
             have_attributes(
@@ -911,17 +814,8 @@ RSpec.describe SportsManager::MatchBuilder do
 
           teams = [team1, team2, team3, team4, team5, team6]
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            { id: 1, name: 'João' },
-            { id: 2, name: 'Marcelo' },
-            { id: 3, name: 'José' },
-            { id: 4, name: 'Pedro' },
-            { id: 5, name: 'Carlos' },
-            { id: 6, name: 'Leandro' }
-          ]
-
           matches_result = described_class.new(category: category, matches: matches, teams: teams,
-                                               tournament_type: tournament_type, subscriptions: subscriptions).build
+                                               tournament_type: tournament_type).build
 
           expect(matches_result).to match_array [
             have_attributes(
@@ -995,16 +889,9 @@ RSpec.describe SportsManager::MatchBuilder do
           ]
 
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            { id: 1, name: 'João' },
-            { id: 2, name: 'Marcelo' },
-            { id: 3, name: 'José' },
-            { id: 4, name: 'Pedro' }
-          ]
           participant_ids = described_class.new(category: :mixed_single,
                                                 matches: matches,
                                                 tournament_type: tournament_type,
-                                                subscriptions: subscriptions,
                                                 teams: []).send(:participant_ids)
 
           expect(participant_ids).to match_array [[1, 2], [3, 4]]
@@ -1018,14 +905,9 @@ RSpec.describe SportsManager::MatchBuilder do
           ]
 
           tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-          subscriptions = [
-            [{ id: 1, name: 'João' }, { id: 2, name: 'Marcelo' }],
-            [{ id: 3, name: 'José' }, { id: 4, name: 'Pedro' }]
-          ]
           participant_ids = described_class.new(category: :mixed_single,
                                                 matches: matches,
                                                 tournament_type: tournament_type,
-                                                subscriptions: subscriptions,
                                                 teams: []).send(:participant_ids)
 
           expect(participant_ids).to match_array [[[1, 2], [3, 4]]]
@@ -1038,16 +920,9 @@ RSpec.describe SportsManager::MatchBuilder do
         matches = [[1, 2], [3, 4]]
 
         tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-        subscriptions = [
-          { id: 1, name: 'João' },
-          { id: 2, name: 'Marcelo' },
-          { id: 3, name: 'José' },
-          { id: 4, name: 'Pedro' }
-        ]
         participant_ids = described_class.new(category: :mixed_single,
                                               matches: matches,
                                               tournament_type: tournament_type,
-                                              subscriptions: subscriptions,
                                               teams: []).send(:participant_ids)
 
         expect(participant_ids).to match_array [[1, 2], [3, 4]]
@@ -1061,13 +936,8 @@ RSpec.describe SportsManager::MatchBuilder do
         matches = [{ id: 1, participants: [1, 2] }]
 
         tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-        subscriptions = [
-          { id: 1, name: 'João' },
-          { id: 2, name: 'Marcelo' }
-        ]
         result = described_class.new(category: :mixed_single, matches: matches,
                                      tournament_type: tournament_type,
-                                     subscriptions: subscriptions,
                                      teams: []).send(:generated_matches_structure?)
 
         expect(result).to be_truthy
@@ -1079,14 +949,9 @@ RSpec.describe SportsManager::MatchBuilder do
         matches = [[1, 2]]
 
         tournament_type = SportsManager::Matches::Algorithms::SingleEliminationAlgorithm
-        subscriptions = [
-          { id: 1, name: 'João' },
-          { id: 2, name: 'Marcelo' }
-        ]
         result = described_class.new(category: :mixed_single,
                                      matches: matches,
                                      tournament_type: tournament_type,
-                                     subscriptions: subscriptions,
                                      teams: []).send(:generated_matches_structure?)
 
         expect(result).to be_falsey

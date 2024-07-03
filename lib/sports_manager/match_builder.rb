@@ -10,12 +10,12 @@ module SportsManager
     BYE_MATCH_CLASS = ByeMatch
     NIL_TEAM = NilTeam
 
-    def initialize(category:, matches:, teams:, tournament_type:, subscriptions:)
+    def initialize(category:, matches:, teams:, tournament_type:)
       @category = category
-      @matches = matches_completer(matches, subscriptions)
+      @teams = teams
+      @matches = matches_completer(matches)
       @builded_matches = []
       @tournament_type = tournament_type
-      @teams = teams
     end
 
     def build
@@ -98,8 +98,13 @@ module SportsManager
         .next_matches
     end
 
-    def matches_completer(matches, subscriptions)
-      return MatchesGenerator.call({ category => subscriptions }).values.first if matches.nil? || matches.empty?
+    def subscriptions_ids
+      teams.select { |team| team.category == category }
+        .map { |team| team.participants.map(&:id) }
+    end
+
+    def matches_completer(matches)
+      return MatchesGenerator.call(subscriptions_ids) if matches.nil? || matches.empty?
 
       matches
     end

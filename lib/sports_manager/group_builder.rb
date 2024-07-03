@@ -62,8 +62,7 @@ module SportsManager
     private
 
     def builded_matches
-      MatchBuilder.new(category: category, matches: matches, teams: teams, tournament_type: tournament_type,
-                       subscriptions: subscriptions).build
+      MatchBuilder.new(category: category, matches: matches, teams: teams, tournament_type: tournament_type).build
     end
 
     def teams

@@ -796,9 +796,8 @@ RSpec.describe SportsManager::TournamentGenerator do
         }
       }
 
-      generated_matches = {
-        mixed_single: [[1, 34], [5, 33], [10, 29], [17, 25]]
-      }
+      generated_matches = [[1, 34], [5, 33], [10, 29], [17, 25]]
+
       allow(SportsManager::MatchesGenerator).to receive(:call).and_return(generated_matches)
 
       tournament_solution = described_class.new
