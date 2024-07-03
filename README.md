@@ -148,7 +148,7 @@ The gem comes with predefined example tournaments:
 ```ruby
 solution = SportsManager::TournamentGenerator.example(:simple)
 solution = SportsManager::TournamentGenerator.example(:complex)
-#...complete, minimal
+#complete, minimal, ...
 ```
 
 ### Output Formats
