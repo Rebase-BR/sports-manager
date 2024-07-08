@@ -643,7 +643,7 @@ RSpec.describe SportsManager::TournamentGenerator do
             .call
 
         json = tournament_solution.as_json.deep_symbolize_keys
-        local_offset = Time.now.strftime("%:z")
+        local_offset = Time.now.strftime('%:z')
 
         expect(json).to eq(
           {
