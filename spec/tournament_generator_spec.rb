@@ -643,6 +643,7 @@ RSpec.describe SportsManager::TournamentGenerator do
             .call
 
         json = tournament_solution.as_json.deep_symbolize_keys
+        local_offset = Time.now.strftime("%:z")
 
         expect(json).to eq(
           {
@@ -702,7 +703,7 @@ RSpec.describe SportsManager::TournamentGenerator do
                     },
                     timeslot: {
                       court: 0,
-                      slot: '2023-09-09T09:00:00.000-03:00'
+                      slot: "2023-09-09T09:00:00.000#{local_offset}"
                     }
                   },
                   {
@@ -713,7 +714,7 @@ RSpec.describe SportsManager::TournamentGenerator do
                     },
                     timeslot: {
                       court: 0,
-                      slot: '2023-09-09T10:30:00.000-03:00'
+                      slot: "2023-09-09T10:30:00.000#{local_offset}"
                     }
                   },
                   {
@@ -724,7 +725,7 @@ RSpec.describe SportsManager::TournamentGenerator do
                     },
                     timeslot: {
                       court: 1,
-                      slot: '2023-09-09T09:00:00.000-03:00'
+                      slot: "2023-09-09T09:00:00.000#{local_offset}"
                     }
                   },
                   {
@@ -735,7 +736,7 @@ RSpec.describe SportsManager::TournamentGenerator do
                     },
                     timeslot: {
                       court: 1,
-                      slot: '2023-09-09T10:00:00.000-03:00'
+                      slot: "2023-09-09T10:00:00.000#{local_offset}"
                     }
                   },
                   {
@@ -746,7 +747,7 @@ RSpec.describe SportsManager::TournamentGenerator do
                     },
                     timeslot: {
                       court: 1,
-                      slot: '2023-09-09T11:00:00.000-03:00'
+                      slot: "2023-09-09T11:00:00.000#{local_offset}"
                     }
                   },
                   {
@@ -757,7 +758,7 @@ RSpec.describe SportsManager::TournamentGenerator do
                     },
                     timeslot: {
                       court: 0,
-                      slot: '2023-09-09T11:30:00.000-03:00'
+                      slot: "2023-09-09T11:30:00.000#{local_offset}"
                     }
                   },
                   {
@@ -768,7 +769,7 @@ RSpec.describe SportsManager::TournamentGenerator do
                     },
                     timeslot: {
                       court: 1,
-                      slot: '2023-09-09T12:00:00.000-03:00'
+                      slot: "2023-09-09T12:00:00.000#{local_offset}"
                     }
                   }
                 ]
