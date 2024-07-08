@@ -28,3 +28,5 @@ Naming/FileName:
     - 'lib/sports-manager.rb'
 Style/OpenStructUse:
   Enabled: false
+Gemspec/RequireMFA:
+  Enabled: false
