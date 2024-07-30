@@ -16,6 +16,11 @@ You can install using the following command:
 gem install "sports-manager"
 ```
 
+Or add the following line to your Gemfile:
+```bash
+gem "sports-manager"
+```
+
 Then install it:
 
 ```bash
