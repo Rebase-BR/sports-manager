@@ -5,13 +5,17 @@ module SportsManager
     class NoOverlappingConstraint < ::CSP::Constraint
       attr_reader :matches, :match_time
 
+      IN_PAIRS = 2
+
       def self.for_tournament(tournament:, csp:)
-        csp.add_constraint(
-          new(
-            matches: tournament.matches.values.flatten,
-            match_time: tournament.match_time
+        matches = tournament.matches.values.flatten
+        match_time = tournament.match_time
+
+        matches.combination(IN_PAIRS) do |match1, match2|
+          csp.add_constraint(
+            new(matches: [match1, match2], match_time: match_time)
           )
-        )
+        end
       end
 
       def initialize(matches:, match_time:)

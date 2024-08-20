@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'pry-byebug'
 
 # rubocop:disable Metrics/AbcSize
 module SportsManager
@@ -158,7 +159,7 @@ module SportsManager
         .add_constraint(Constraints::MatchConstraint)
         .add_constraint(Constraints::MultiCategoryConstraint)
         .add_constraint(Constraints::NextRoundConstraint)
-        .build
+        .build.tap {|k| k.add_lookahead(CSP::Algorithms::Lookahead::Ac3.new(k)) }
     end
 
     def build_tournament

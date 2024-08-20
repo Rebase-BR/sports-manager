@@ -7,19 +7,22 @@ module SportsManager
                   :match_time, :break_time, :minimum_match_gap
 
       MINUTE = 60
+      IN_PAIRS = 2
 
       def self.for_tournament(tournament:, csp:)
         tournament.multi_tournament_participants.each do |participant|
           matches = tournament.find_participant_matches(participant)
 
-          constraint = new(
-            target_participant: participant,
-            matches: matches,
-            match_time: tournament.match_time,
-            break_time: tournament.break_time
-          )
+          matches.combination(2) do |match1, match2|
+            constraint = new(
+              target_participant: participant,
+              matches: [match1, match2],
+              match_time: tournament.match_time,
+              break_time: tournament.break_time
+            )
 
-          csp.add_constraint(constraint)
+            csp.add_constraint(constraint)
+          end
         end
       end
 

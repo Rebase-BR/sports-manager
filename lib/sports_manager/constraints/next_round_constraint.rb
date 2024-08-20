@@ -13,12 +13,14 @@ module SportsManager
           .matches.values.flatten
           .select(&:previous_matches?)
           .each do |match|
-            csp.add_constraint new(
-              target_match: match,
-              matches: match.previous_matches,
-              match_time: tournament.match_time,
-              break_time: tournament.break_time
-            )
+            match.previous_matches.each do |previous_match|
+              csp.add_constraint new(
+                target_match: match,
+                matches: [previous_match],
+                match_time: tournament.match_time,
+                break_time: tournament.break_time
+              )
+            end
           end
       end
 

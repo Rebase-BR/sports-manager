@@ -11,4 +11,5 @@ group :development, :test do
   gem 'rspec', '~> 3.0'
   gem 'rubocop', '~> 1.28', require: false
   gem 'simplecov', require: false
+  gem 'pry-byebug'
 end
