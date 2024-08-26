@@ -22,7 +22,7 @@ module SportsManager
     extend Forwardable
 
     attr_reader :format, :tournament, :variables, :domains,
-                :ordering, :filtering, :csp
+                :ordering, :filtering, :lookahead, :csp
 
     attr_accessor :days, :subscriptions, :matches, :courts, :game_length, :rest_break, :single_day_matches,
                   :tournament_type
@@ -50,6 +50,7 @@ module SportsManager
       @matches = {}
       @ordering = Algorithms::Ordering::MultipleMatchesParticipant
       @filtering = Algorithms::Filtering::NoOverlap
+      @lookahead = CSP::Algorithms::Lookahead::Ac3
     end
 
     def add_day(day, start, finish)
@@ -153,6 +154,7 @@ module SportsManager
         .add_domains(domains)
         .add_ordering(ordering)
         .add_filtering(filtering)
+        .add_lookahead(lookahead)
         .add_constraint(Constraints::AllDifferentConstraint)
         .add_constraint(Constraints::NoOverlappingConstraint)
         .add_constraint(Constraints::MatchConstraint)
