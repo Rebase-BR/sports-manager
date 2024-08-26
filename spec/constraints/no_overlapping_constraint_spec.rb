@@ -5,13 +5,15 @@ require 'spec_helper'
 RSpec.describe SportsManager::Constraints::NoOverlappingConstraint do
   describe '.for_tournament' do
     it 'sets constraints with all matches' do
-      csp = spy
-      constraint = instance_double(described_class)
+      params = { category: 'mixed_single', round: 0, depends_on: [] }
 
-      match1 = instance_double(SportsManager::Match)
-      match2 = instance_double(SportsManager::Match)
-      match3 = instance_double(SportsManager::Match)
-      matches = [match1, match2, match3]
+      match1, match2, match3 = matches = [
+        SportsManager::Match.new(**params.merge(id: 1)),
+        SportsManager::Match.new(**params.merge(id: 2)),
+        SportsManager::Match.new(**params.merge(id: 3))
+      ]
+
+      csp = CSP::Problem.new.add_variables(matches, domains: [spy])
 
       tournament = instance_double(
         SportsManager::Tournament,
@@ -23,14 +25,15 @@ RSpec.describe SportsManager::Constraints::NoOverlappingConstraint do
         }
       )
 
-      allow(described_class)
-        .to receive(:new)
-        .with(matches: matches, match_time: 60)
-        .and_return constraint
+      allow(csp).to receive(:add_constraint)
+      allow(described_class).to receive(:new).and_call_original
 
       described_class.for_tournament(tournament: tournament, csp: csp)
 
-      expect(csp).to have_received(:add_constraint).with(constraint).once
+      expect(csp).to have_received(:add_constraint).thrice
+      expect(described_class).to have_received(:new).with(matches: [match1, match2], match_time: 60)
+      expect(described_class).to have_received(:new).with(matches: [match1, match3], match_time: 60)
+      expect(described_class).to have_received(:new).with(matches: [match2, match3], match_time: 60)
     end
   end
 

@@ -5,27 +5,33 @@ require 'spec_helper'
 RSpec.describe SportsManager::Constraints::MatchConstraint do
   describe '.for_tournament' do
     it 'sets constraint for next rounds matches' do
-      csp = spy
-      constraint = instance_double(described_class)
-      matches = [double, double, double]
-      target_match = instance_double(
-        SportsManager::Match,
-        previous_matches?: true,
-        previous_matches: matches
-      )
+      params = { category: 'mixed_single', round: 0, depends_on: [] }
+
+      match1, match2, match3 = matches = [
+        SportsManager::Match.new(**params.merge(id: 1)),
+        SportsManager::Match.new(**params.merge(id: 2)),
+        SportsManager::Match.new(**params.merge(id: 3))
+      ]
+      target_match = SportsManager::Match.new(**params.merge(id: 4, depends_on: matches))
+
       tournament = instance_double(
         SportsManager::Tournament,
         matches: { mixed_single: [target_match] }
       )
 
-      allow(described_class)
-        .to receive(:new)
-        .with(target_match: target_match, matches: matches)
-        .and_return constraint
+      csp = CSP::Problem.new.add_variables(
+        matches + [target_match], domains: [spy]
+      )
+
+      allow(csp).to receive(:add_constraint)
+      allow(described_class).to receive(:new).and_call_original
 
       described_class.for_tournament(tournament: tournament, csp: csp)
 
-      expect(csp).to have_received(:add_constraint).with(constraint)
+      expect(csp).to have_received(:add_constraint).thrice
+      expect(described_class).to have_received(:new).with(target_match: target_match, matches: [match1])
+      expect(described_class).to have_received(:new).with(target_match: target_match, matches: [match2])
+      expect(described_class).to have_received(:new).with(target_match: target_match, matches: [match3])
     end
   end
 

@@ -10,9 +10,11 @@ module SportsManager
       def self.for_tournament(tournament:, csp:)
         tournament.matches.each do |(_category, matches)|
           matches.select(&:previous_matches?).each do |match|
-            csp.add_constraint(
-              new(target_match: match, matches: match.previous_matches)
-            )
+            match.previous_matches.each do |previous_match|
+              csp.add_constraint(
+                new(target_match: match, matches: [previous_match])
+              )
+            end
           end
         end
       end
