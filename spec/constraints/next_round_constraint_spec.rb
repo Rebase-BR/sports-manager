@@ -5,18 +5,16 @@ require 'spec_helper'
 RSpec.describe SportsManager::Constraints::NextRoundConstraint do
   describe '.for_tournament' do
     it 'sets constraint for next round matches with dependencies' do
-      csp = spy
       params = {
-        id: spy,
         category: spy,
         team1: spy,
         team2: spy,
         round: spy
       }
 
-      match1 = SportsManager::Match.new(**params, depends_on: [])
-      match2 = SportsManager::Match.new(**params, depends_on: [])
-      match3 = SportsManager::Match.new(**params, depends_on: [match1, match2])
+      match1 = SportsManager::Match.new(**params, id: 1, depends_on: [])
+      match2 = SportsManager::Match.new(**params, id: 2, depends_on: [])
+      match3 = SportsManager::Match.new(**params, id: 3, depends_on: [match1, match2])
 
       tournament = instance_double(
         SportsManager::Tournament,
@@ -25,20 +23,26 @@ RSpec.describe SportsManager::Constraints::NextRoundConstraint do
         matches: { mixed_single: [match1, match2, match3] }
       )
 
-      constraint = instance_double(described_class)
+      csp = CSP::Problem.new.add_variables([match1, match2, match3], domains: [spy])
 
-      allow(described_class)
-        .to receive(:new)
-        .with(
-          target_match: match3,
-          matches: [match1, match2],
-          match_time: 60,
-          break_time: 10
-        ).and_return constraint
+      allow(csp).to receive(:add_constraint)
+      allow(described_class).to receive(:new).and_call_original
 
       described_class.for_tournament(tournament: tournament, csp: csp)
 
-      expect(csp).to have_received(:add_constraint).with(constraint)
+      expect(csp).to have_received(:add_constraint).twice
+      expect(described_class).to have_received(:new).with(
+        target_match: match3,
+        matches: [match1],
+        match_time: 60,
+        break_time: 10
+      )
+      expect(described_class).to have_received(:new).with(
+        target_match: match3,
+        matches: [match2],
+        match_time: 60,
+        break_time: 10
+      )
     end
 
     context 'when it has byes' do

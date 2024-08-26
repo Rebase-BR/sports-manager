@@ -20,7 +20,8 @@ module SportsManager
   # csp = builder.build
   class TournamentProblemBuilder
     attr_reader :variables, :domains, :constraints, :max_solutions,
-                :filtering_algorithm, :ordering_algorithm, :tournament
+                :filtering_algorithm, :ordering_algorithm, :lookahead_algorithm,
+                :tournament
 
     MINIMUM_SOLUTIONS = 1
 
@@ -31,6 +32,7 @@ module SportsManager
 
       @filtering_algorithm = nil
       @ordering_algorithm = nil
+      @lookahead_algorithm = nil
 
       @max_solutions = MINIMUM_SOLUTIONS
 
@@ -61,6 +63,12 @@ module SportsManager
       self
     end
 
+    def add_lookahead(lookahead_algorithm_class)
+      @lookahead_algorithm = lookahead_algorithm_class
+
+      self
+    end
+
     # TODO: change to pass symbol instead of class?
     def add_constraint(constraint_class)
       @constraints |= Utils::Array.wrap(constraint_class)
@@ -79,8 +87,11 @@ module SportsManager
         variables.each do |variable|
           problem.add_variable(variable, domains: domains[variable])
         end
-        problem.add_ordering ordering(problem)
-        problem.add_filtering filtering(problem)
+
+        problem.add_ordering(ordering(problem))
+        problem.add_filtering(filtering(problem))
+        problem.add_lookahead(lookahead(problem))
+
         build_constraint(problem)
       end
     end
@@ -92,11 +103,21 @@ module SportsManager
     end
 
     def ordering(problem)
+      return if ordering_algorithm.nil?
+
       ordering_algorithm.for(problem: problem, dependency: tournament)
     end
 
     def filtering(problem)
+      return if filtering_algorithm.nil?
+
       filtering_algorithm.for(problem: problem, dependency: tournament)
+    end
+
+    def lookahead(problem)
+      return if lookahead_algorithm.nil?
+
+      lookahead_algorithm.new(problem)
     end
 
     def build_constraint(csp)

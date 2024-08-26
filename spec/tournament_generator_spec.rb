@@ -843,5 +843,44 @@ RSpec.describe SportsManager::TournamentGenerator do
         )
       )
     end
+
+    context 'when problem has no solution' do
+      it 'test case' do
+        subscriptions = {
+          mens_single: [
+            { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+            { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+            { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+            { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+            { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
+            { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' }
+          ]
+        }
+        matches = {
+          mens_single: [
+            [1, 12],
+            [2, 11],
+            [3, 10],
+            [4, 9],
+            [5, 8],
+            [6, 7]
+          ]
+        }
+
+        result = SportsManager::TournamentGenerator
+          .new(format: :cli)
+          .add_days({ '2023-09-09': { start: 9, end: 12 } })
+          .add_courts(2)
+          .add_game_length(60)
+          .add_rest_break(10)
+          .enable_single_day_matches(true)
+          .add_subscriptions(subscriptions)
+          .single_elimination_algorithm
+          .add_matches(matches)
+          .call
+
+        expect(result.solutions).to be_empty
+      end
+    end
   end
 end
