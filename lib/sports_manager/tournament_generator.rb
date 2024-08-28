@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'timeout'
+
 # rubocop:disable Metrics/AbcSize
 module SportsManager
   # Public:Tournament Solver
@@ -22,7 +24,7 @@ module SportsManager
     extend Forwardable
 
     attr_reader :format, :tournament, :variables, :domains,
-                :ordering, :filtering, :lookahead, :csp
+                :ordering, :filtering, :lookahead, :csp, :timeout
 
     attr_accessor :days, :subscriptions, :matches, :courts, :game_length, :rest_break, :single_day_matches,
                   :tournament_type
@@ -43,8 +45,9 @@ module SportsManager
         .call
     end
 
-    def initialize(format: :cli)
+    def initialize(format: :cli, timeout: nil)
       @format = format
+      @timeout = timeout
       @days = {}
       @subscriptions = {}
       @matches = {}
@@ -129,7 +132,7 @@ module SportsManager
     def call
       setup
 
-      solutions = csp.solve
+      solutions = Timeout.timeout(timeout) { csp.solve }
 
       TournamentSolution
         .new(tournament: tournament, solutions: solutions)
