@@ -54,7 +54,7 @@ RSpec.describe SportsManager::TournamentGenerator do
     }
 
     tournament_generator =
-      described_class.new
+      described_class.new(timeout: 1)
         .add_day('2023-09-09', 9, 20)
         .add_subscription(:mixed_single, { id: 1, name: 'João' })
         .add_subscription(:mixed_single, { id: 34, name: 'Cleber' })
@@ -880,6 +880,45 @@ RSpec.describe SportsManager::TournamentGenerator do
           .call
 
         expect(result.solutions).to be_empty
+      end
+    end
+
+    context 'when timeout is configured' do
+      it 'raises a timeout error' do
+        subscriptions = {
+          mens_single: [
+            { id: 1, name: 'João' },      { id: 2, name: 'Marcelo' },
+            { id: 3, name: 'José' },      { id: 4, name: 'Pedro' },
+            { id: 5, name: 'Carlos' },    { id: 6, name: 'Leandro' },
+            { id: 7, name: 'Leonardo' },  { id: 8, name: 'Cláudio' },
+            { id: 9, name: 'Alexandre' }, { id: 10, name: 'Daniel' },
+            { id: 11, name: 'Marcos' },   { id: 12, name: 'Henrique' }
+          ]
+        }
+        matches = {
+          mens_single: [
+            [1, 12],
+            [2, 11],
+            [3, 10],
+            [4, 9],
+            [5, 8],
+            [6, 7]
+          ]
+        }
+
+        expect do
+          SportsManager::TournamentGenerator
+            .new(format: :cli, timeout: 1)
+            .add_days({ '2023-09-09': { start: 9, end: 12 } })
+            .add_courts(2)
+            .add_game_length(60)
+            .add_rest_break(10)
+            .enable_single_day_matches(true)
+            .add_subscriptions(subscriptions)
+            .single_elimination_algorithm
+            .add_matches(matches)
+            .call
+        end.to raise_error(Timeout::Error)
       end
     end
   end
