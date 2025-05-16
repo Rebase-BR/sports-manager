@@ -43,7 +43,11 @@ module SportsManager
       end
 
       def build_category_acronym(category, size = 2, reference = {})
-        parts = category.to_s.split(CATEGORY_SEPARATOR)
+        category = category.to_s
+        category_middle = category.length / 2
+
+        parts = category.split(CATEGORY_SEPARATOR) if category.to_s.match?(/#{CATEGORY_SEPARATOR}/)
+        parts ||= [category[0..category_middle], category[category_middle..-1]]
         interval = (0..size)
 
         build_acronym(parts, interval, reference)

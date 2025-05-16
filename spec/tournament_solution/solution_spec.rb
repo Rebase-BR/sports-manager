@@ -67,7 +67,9 @@ RSpec.describe SportsManager::TournamentSolution::Solution do
         instance_double(SportsManager::TournamentSolution::Fixture, category: :mixed_single),
         instance_double(SportsManager::TournamentSolution::Fixture, category: :mixed_single),
         instance_double(SportsManager::TournamentSolution::Fixture, category: :men_single),
-        instance_double(SportsManager::TournamentSolution::Fixture, category: :women_double)
+        instance_double(SportsManager::TournamentSolution::Fixture, category: :women_double),
+        instance_double(SportsManager::TournamentSolution::Fixture, category: :dogdouble),
+        instance_double(SportsManager::TournamentSolution::Fixture, category: :d),
       ]
 
       solution = described_class.new(fixtures)
@@ -75,7 +77,9 @@ RSpec.describe SportsManager::TournamentSolution::Solution do
       expect(solution.acronyms).to eq({
         mixed_single: 'ms',
         men_single: 'mesi',
-        women_double: 'wd'
+        women_double: 'wd',
+        dogdouble: 'do',
+        d: 'dd'
       })
     end
 
