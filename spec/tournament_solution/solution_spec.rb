@@ -69,7 +69,7 @@ RSpec.describe SportsManager::TournamentSolution::Solution do
         instance_double(SportsManager::TournamentSolution::Fixture, category: :men_single),
         instance_double(SportsManager::TournamentSolution::Fixture, category: :women_double),
         instance_double(SportsManager::TournamentSolution::Fixture, category: :dogdouble),
-        instance_double(SportsManager::TournamentSolution::Fixture, category: :d),
+        instance_double(SportsManager::TournamentSolution::Fixture, category: :d)
       ]
 
       solution = described_class.new(fixtures)
